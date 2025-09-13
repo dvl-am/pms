@@ -71,9 +71,19 @@ export class PromptService {
         id: 'sample1',
         versionNumber: '2.1',
         processStage: 'Content Generation',
-        instructionParagraphs: 'Create engaging and informative content that resonates with the target audience. Focus on clarity, accuracy, and maintaining a consistent tone throughout the piece.',
-        instructionGuide: 'This instruction ensures content quality and brand consistency across all generated materials.',
-        reasonForEdit: 'Updated to include tone consistency requirements',
+        instructionParagraphs: [
+          'Create engaging and informative content that resonates with the target audience.',
+          'Focus on clarity, accuracy, and maintaining a consistent tone throughout the piece.',
+          'Ensure all content aligns with brand guidelines and messaging strategy.'
+        ],
+        instructionGuide: [
+          'This instruction ensures content quality and brand consistency across all generated materials.',
+          'Helps maintain professional standards and user engagement metrics.'
+        ],
+        reasonForEdit: [
+          'Updated to include tone consistency requirements',
+          'Added brand alignment guidelines'
+        ],
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-20')
       },
@@ -81,9 +91,19 @@ export class PromptService {
         id: 'sample2',
         versionNumber: '1.2',
         processStage: 'Code Review',
-        instructionParagraphs: 'Review code for best practices, security vulnerabilities, and performance optimizations. Ensure proper documentation and adherence to coding standards.',
-        instructionGuide: 'Code review instructions help maintain code quality and reduce technical debt in the long term.',
-        reasonForEdit: 'Added security vulnerability checks',
+        instructionParagraphs: [
+          'Review code for best practices, security vulnerabilities, and performance optimizations.',
+          'Ensure proper documentation and adherence to coding standards.',
+          'Check for code maintainability and readability.'
+        ],
+        instructionGuide: [
+          'Code review instructions help maintain code quality and reduce technical debt in the long term.',
+          'Ensures consistent development practices across the team.'
+        ],
+        reasonForEdit: [
+          'Added security vulnerability checks',
+          'Enhanced documentation requirements'
+        ],
         createdAt: new Date('2024-01-10'),
         updatedAt: new Date('2024-01-18')
       }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { PromptService } from '../services/prompt.service';
 import { Prompt, PromptFormData } from '../models/prompt.interface';
 
@@ -56,16 +56,40 @@ import { Prompt, PromptFormData } from '../models/prompt.interface';
         <!-- Instruction Paragraphs -->
         <div class="form-group">
           <label for="instructionParagraphs" class="form-label">Instruction Paragraphs</label>
-          <textarea 
-            id="instructionParagraphs" 
-            formControlName="instructionParagraphs" 
-            class="form-textarea"
-            [class.error]="promptForm.get('instructionParagraphs')?.invalid && promptForm.get('instructionParagraphs')?.touched"
-            rows="6"
-            placeholder="Enter detailed instructions for the prompt..."></textarea>
-          <div *ngIf="promptForm.get('instructionParagraphs')?.invalid && promptForm.get('instructionParagraphs')?.touched" 
+          <div formArrayName="instructionParagraphs" class="form-array">
+            <div *ngFor="let paragraph of instructionParagraphsArray.controls; let i = index" 
+                 class="form-array-item">
+              <div class="array-item-content">
+                <textarea 
+                  [formControlName]="i"
+                  class="form-textarea"
+                  [class.error]="paragraph.invalid && paragraph.touched"
+                  rows="3"
+                  [placeholder]="'Instruction paragraph ' + (i + 1) + '...'"></textarea>
+                <button 
+                  type="button" 
+                  class="remove-btn"
+                  (click)="removeInstructionParagraph(i)"
+                  [disabled]="instructionParagraphsArray.length <= 1"
+                  title="Remove paragraph">
+                  ✕
+                </button>
+              </div>
+              <div *ngIf="paragraph.invalid && paragraph.touched" 
+                   class="error-message">
+                Instruction paragraph is required
+              </div>
+            </div>
+            <button 
+              type="button" 
+              class="add-btn"
+              (click)="addInstructionParagraph()">
+              + Add Instruction Paragraph
+            </button>
+          </div>
+          <div *ngIf="instructionParagraphsArray.invalid && instructionParagraphsArray.touched" 
                class="error-message">
-            Instruction paragraphs are required
+            At least one instruction paragraph is required
           </div>
         </div>
 
@@ -73,32 +97,80 @@ import { Prompt, PromptFormData } from '../models/prompt.interface';
         <div class="form-group">
           <label for="instructionGuide" class="form-label">Instruction Guide</label>
           <p class="form-helper">Explain the meaning and purpose of this instruction</p>
-          <textarea 
-            id="instructionGuide" 
-            formControlName="instructionGuide" 
-            class="form-textarea"
-            [class.error]="promptForm.get('instructionGuide')?.invalid && promptForm.get('instructionGuide')?.touched"
-            rows="4"
-            placeholder="Why is this instruction required? What purpose does it serve?"></textarea>
-          <div *ngIf="promptForm.get('instructionGuide')?.invalid && promptForm.get('instructionGuide')?.touched" 
+          <div formArrayName="instructionGuide" class="form-array">
+            <div *ngFor="let guide of instructionGuideArray.controls; let i = index" 
+                 class="form-array-item">
+              <div class="array-item-content">
+                <textarea 
+                  [formControlName]="i"
+                  class="form-textarea"
+                  [class.error]="guide.invalid && guide.touched"
+                  rows="3"
+                  [placeholder]="'Guide explanation ' + (i + 1) + '...'"></textarea>
+                <button 
+                  type="button" 
+                  class="remove-btn"
+                  (click)="removeInstructionGuide(i)"
+                  [disabled]="instructionGuideArray.length <= 1"
+                  title="Remove guide">
+                  ✕
+                </button>
+              </div>
+              <div *ngIf="guide.invalid && guide.touched" 
+                   class="error-message">
+                Instruction guide is required
+              </div>
+            </div>
+            <button 
+              type="button" 
+              class="add-btn"
+              (click)="addInstructionGuide()">
+              + Add Instruction Guide
+            </button>
+          </div>
+          <div *ngIf="instructionGuideArray.invalid && instructionGuideArray.touched" 
                class="error-message">
-            Instruction guide is required
+            At least one instruction guide is required
           </div>
         </div>
 
         <!-- Reason for Edit -->
         <div class="form-group" *ngIf="isEditMode">
           <label for="reasonForEdit" class="form-label">Reason for Edit</label>
-          <input 
-            type="text" 
-            id="reasonForEdit" 
-            formControlName="reasonForEdit" 
-            class="form-input"
-            [class.error]="promptForm.get('reasonForEdit')?.invalid && promptForm.get('reasonForEdit')?.touched"
-            placeholder="Brief description of what was changed and why">
-          <div *ngIf="promptForm.get('reasonForEdit')?.invalid && promptForm.get('reasonForEdit')?.touched" 
+          <div formArrayName="reasonForEdit" class="form-array">
+            <div *ngFor="let reason of reasonForEditArray.controls; let i = index" 
+                 class="form-array-item">
+              <div class="array-item-content">
+                <input 
+                  type="text"
+                  [formControlName]="i"
+                  class="form-input"
+                  [class.error]="reason.invalid && reason.touched"
+                  [placeholder]="'Edit reason ' + (i + 1) + '...'">
+                <button 
+                  type="button" 
+                  class="remove-btn"
+                  (click)="removeReasonForEdit(i)"
+                  [disabled]="reasonForEditArray.length <= 1"
+                  title="Remove reason">
+                  ✕
+                </button>
+              </div>
+              <div *ngIf="reason.invalid && reason.touched" 
+                   class="error-message">
+                Reason for edit is required
+              </div>
+            </div>
+            <button 
+              type="button" 
+              class="add-btn"
+              (click)="addReasonForEdit()">
+              + Add Edit Reason
+            </button>
+          </div>
+          <div *ngIf="reasonForEditArray.invalid && reasonForEditArray.touched" 
                class="error-message">
-            Reason for edit is required when updating
+            At least one reason for edit is required when updating
           </div>
         </div>
 
@@ -132,6 +204,18 @@ export class PromptFormComponent implements OnInit {
   versionOptions: string[] = [];
   isSubmitting = false;
 
+  get instructionParagraphsArray(): FormArray {
+    return this.promptForm.get('instructionParagraphs') as FormArray;
+  }
+
+  get instructionGuideArray(): FormArray {
+    return this.promptForm.get('instructionGuide') as FormArray;
+  }
+
+  get reasonForEditArray(): FormArray {
+    return this.promptForm.get('reasonForEdit') as FormArray;
+  }
+
   get isEditMode(): boolean {
     return !!this.editPrompt;
   }
@@ -150,10 +234,57 @@ export class PromptFormComponent implements OnInit {
     this.promptForm = this.fb.group({
       versionNumber: [this.editPrompt?.versionNumber || '', Validators.required],
       processStage: [this.editPrompt?.processStage || '', Validators.required],
-      instructionParagraphs: [this.editPrompt?.instructionParagraphs || '', Validators.required],
-      instructionGuide: [this.editPrompt?.instructionGuide || '', Validators.required],
-      reasonForEdit: [this.editPrompt?.reasonForEdit || '', this.isEditMode ? Validators.required : null]
+      instructionParagraphs: this.fb.array(
+        this.editPrompt?.instructionParagraphs?.length 
+          ? this.editPrompt.instructionParagraphs.map(p => this.fb.control(p, Validators.required))
+          : [this.fb.control('', Validators.required)],
+        Validators.required
+      ),
+      instructionGuide: this.fb.array(
+        this.editPrompt?.instructionGuide?.length 
+          ? this.editPrompt.instructionGuide.map(g => this.fb.control(g, Validators.required))
+          : [this.fb.control('', Validators.required)],
+        Validators.required
+      ),
+      reasonForEdit: this.fb.array(
+        this.isEditMode 
+          ? (this.editPrompt?.reasonForEdit?.length 
+              ? this.editPrompt.reasonForEdit.map(r => this.fb.control(r, Validators.required))
+              : [this.fb.control('', Validators.required)])
+          : [],
+        this.isEditMode ? Validators.required : null
+      )
     });
+  }
+
+  addInstructionParagraph(): void {
+    this.instructionParagraphsArray.push(this.fb.control('', Validators.required));
+  }
+
+  removeInstructionParagraph(index: number): void {
+    if (this.instructionParagraphsArray.length > 1) {
+      this.instructionParagraphsArray.removeAt(index);
+    }
+  }
+
+  addInstructionGuide(): void {
+    this.instructionGuideArray.push(this.fb.control('', Validators.required));
+  }
+
+  removeInstructionGuide(index: number): void {
+    if (this.instructionGuideArray.length > 1) {
+      this.instructionGuideArray.removeAt(index);
+    }
+  }
+
+  addReasonForEdit(): void {
+    this.reasonForEditArray.push(this.fb.control('', Validators.required));
+  }
+
+  removeReasonForEdit(index: number): void {
+    if (this.reasonForEditArray.length > 1) {
+      this.reasonForEditArray.removeAt(index);
+    }
   }
 
   onSubmit(): void {
@@ -162,7 +293,15 @@ export class PromptFormComponent implements OnInit {
       
       // Simulate API call delay
       setTimeout(() => {
-        this.formSubmit.emit(this.promptForm.value);
+        const formValue = this.promptForm.value;
+        // Filter out empty strings from arrays
+        const cleanedValue = {
+          ...formValue,
+          instructionParagraphs: formValue.instructionParagraphs.filter((p: string) => p.trim()),
+          instructionGuide: formValue.instructionGuide.filter((g: string) => g.trim()),
+          reasonForEdit: formValue.reasonForEdit.filter((r: string) => r.trim())
+        };
+        this.formSubmit.emit(cleanedValue);
         this.isSubmitting = false;
       }, 500);
     } else {
@@ -176,7 +315,12 @@ export class PromptFormComponent implements OnInit {
 
   private markFormGroupTouched(): void {
     Object.keys(this.promptForm.controls).forEach(key => {
-      this.promptForm.get(key)?.markAsTouched();
+      const control = this.promptForm.get(key);
+      if (control instanceof FormArray) {
+        control.controls.forEach(c => c.markAsTouched());
+      } else {
+        control?.markAsTouched();
+      }
     });
   }
 }

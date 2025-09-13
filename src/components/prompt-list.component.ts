@@ -43,17 +43,44 @@ import { Prompt } from '../models/prompt.interface';
             <h3 class="process-stage">{{ prompt.processStage }}</h3>
             
             <div class="instruction-preview">
-              <p class="instruction-text">{{ truncateText(prompt.instructionParagraphs, 150) }}</p>
+              <div class="instruction-paragraphs">
+                <p *ngFor="let paragraph of prompt.instructionParagraphs.slice(0, 2)" 
+                   class="instruction-text">
+                  {{ truncateText(paragraph, 100) }}
+                </p>
+                <p *ngIf="prompt.instructionParagraphs.length > 2" 
+                   class="more-indicator">
+                  +{{ prompt.instructionParagraphs.length - 2 }} more paragraph{{ prompt.instructionParagraphs.length - 2 === 1 ? '' : 's' }}
+                </p>
+              </div>
             </div>
 
             <div class="instruction-guide">
               <h4 class="guide-label">Purpose</h4>
-              <p class="guide-text">{{ truncateText(prompt.instructionGuide, 100) }}</p>
+              <div class="guide-items">
+                <p *ngFor="let guide of prompt.instructionGuide.slice(0, 2)" 
+                   class="guide-text">
+                  {{ truncateText(guide, 80) }}
+                </p>
+                <p *ngIf="prompt.instructionGuide.length > 2" 
+                   class="more-indicator">
+                  +{{ prompt.instructionGuide.length - 2 }} more guide{{ prompt.instructionGuide.length - 2 === 1 ? '' : 's' }}
+                </p>
+              </div>
             </div>
 
-            <div *ngIf="prompt.reasonForEdit" class="edit-reason">
+            <div *ngIf="prompt.reasonForEdit && prompt.reasonForEdit.length > 0" class="edit-reason">
               <h4 class="reason-label">Last Edit</h4>
-              <p class="reason-text">{{ prompt.reasonForEdit }}</p>
+              <div class="reason-items">
+                <p *ngFor="let reason of prompt.reasonForEdit.slice(0, 2)" 
+                   class="reason-text">
+                  {{ reason }}
+                </p>
+                <p *ngIf="prompt.reasonForEdit.length > 2" 
+                   class="more-indicator">
+                  +{{ prompt.reasonForEdit.length - 2 }} more reason{{ prompt.reasonForEdit.length - 2 === 1 ? '' : 's' }}
+                </p>
+              </div>
             </div>
           </div>
 
