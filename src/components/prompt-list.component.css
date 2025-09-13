@@ -1,0 +1,230 @@
+.prompt-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.list-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.list-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.list-subtitle {
+  color: #e2e2e2;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 32px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 8px 0;
+}
+
+.empty-description {
+  color: #6b7280;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.prompt-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.prompt-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 0 24px;
+}
+
+.version-badge {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: #f3f4f6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-btn:hover {
+  background: #dbeafe;
+}
+
+.delete-btn:hover {
+  background: #fef2f2;
+}
+
+.card-content {
+  padding: 20px 24px;
+}
+
+.process-stage {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.instruction-preview {
+  margin-bottom: 20px;
+}
+
+.instruction-text {
+  color: #374151;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.instruction-guide {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #14b8a6;
+}
+
+.guide-label,
+.reason-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #14b8a6;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.guide-text,
+.reason-text {
+  color: #4b5563;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.edit-reason {
+  padding: 12px;
+  background: #fff7ed;
+  border-radius: 8px;
+  border-left: 4px solid #f97316;
+}
+
+.reason-label {
+  color: #f97316;
+}
+
+.card-footer {
+  padding: 0 24px 20px 24px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.timestamp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .prompt-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .prompt-card {
+    margin: 0 8px;
+  }
+
+  .card-header,
+  .card-content,
+  .card-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .empty-state {
+    margin: 0 8px;
+    padding: 48px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .card-actions {
+    align-self: flex-end;
+  }
+
+  .process-stage {
+    font-size: 1.125rem;
+  }
+}
