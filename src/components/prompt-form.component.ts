@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { PromptService } from '../services/prompt.service';
 import { Prompt, PromptFormData } from '../models/prompt.interface';
 
@@ -271,7 +271,7 @@ export class PromptFormComponent implements OnInit {
           : [],
         this.isEditMode ? Validators.required : null
       ),
-      jsonSchema: [this.editPrompt?.jsonSchema || '', [this.validateJsonSchema]]
+      jsonSchema: [this.editPrompt?.jsonSchema || '', [PromptFormComponent.validateJsonSchema]]
     });
   }
 
@@ -327,7 +327,7 @@ export class PromptFormComponent implements OnInit {
     }
   }
 
-  validateJsonSchema(control: any) {
+  static validateJsonSchema(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
     
     try {

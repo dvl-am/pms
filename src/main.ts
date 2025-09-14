@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { PromptFormComponent } from './components/prompt-form.component';
 import { PromptListComponent } from './components/prompt-list.component';
+import { SettingsComponent } from './components/settings.component';
 import { PromptService } from './services/prompt.service';
 import { Prompt, PromptFormData } from './models/prompt.interface';
 
