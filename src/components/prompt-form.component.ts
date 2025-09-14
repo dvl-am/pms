@@ -4,6 +4,18 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl, Va
 import { PromptService } from '../services/prompt.service';
 import { Prompt, PromptFormData } from '../models/prompt.interface';
 
+// Standalone validator function
+function validateJsonSchema(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+  
+  try {
+    JSON.parse(control.value);
+    return null;
+  } catch (error) {
+    return { invalidJson: true };
+  }
+}
+
 @Component({
   selector: 'app-prompt-form',
   standalone: true,
@@ -271,7 +283,7 @@ export class PromptFormComponent implements OnInit {
           : [],
         this.isEditMode ? Validators.required : null
       ),
-      jsonSchema: [this.editPrompt?.jsonSchema || '', [PromptFormComponent.validateJsonSchema]]
+      jsonSchema: [this.editPrompt?.jsonSchema || '', [validateJsonSchema]]
     });
   }
 
@@ -324,17 +336,6 @@ export class PromptFormComponent implements OnInit {
       }, 500);
     } else {
       this.markFormGroupTouched();
-    }
-  }
-
-  static validateJsonSchema(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) return null;
-    
-    try {
-      JSON.parse(control.value);
-      return null;
-    } catch (error) {
-      return { invalidJson: true };
     }
   }
 
