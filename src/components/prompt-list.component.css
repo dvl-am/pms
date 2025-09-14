@@ -199,6 +199,38 @@
   border-left: 4px solid #f97316;
 }
 
+.json-schema-preview {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  border-left: 4px solid #6366f1;
+}
+
+.schema-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6366f1;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.schema-content {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.75rem;
+  color: #475569;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
 .reason-label {
   color: #f97316;
 }

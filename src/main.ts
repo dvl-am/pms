@@ -9,7 +9,7 @@ import { Prompt, PromptFormData } from './models/prompt.interface';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, PromptFormComponent, PromptListComponent],
+  imports: [CommonModule, PromptFormComponent, PromptListComponent, SettingsComponent],
   template: `
     <div class="app-container">
       <header class="app-header">
@@ -18,14 +18,22 @@ import { Prompt, PromptFormData } from './models/prompt.interface';
             Prompt Management System
 </div></div>
           <div><p class="app-subtitle">Manage your AI prompts intelligently</p> </div>
-        
+          <div class="header-actions">
+            <button 
+              class="btn btn-outline"
+              (click)="toggleSettings()"
+              [class.active]="showSettings">
+              <span class="btn-icon">⚙️</span>
+              Settings
+            </button>
+          </div>
         </div>
       </header>
 
       <main class="app-main">
         <div class="main-content">
           <!-- Action Bar -->
-          <div class="action-bar">
+          <div class="action-bar" *ngIf="!showSettings">
             <button 
               *ngIf="!showForm" 
               class="btn btn-primary create-btn"
@@ -42,8 +50,13 @@ import { Prompt, PromptFormData } from './models/prompt.interface';
             </button>
           </div>
 
+          <!-- Settings Section -->
+          <div class="settings-section" *ngIf="showSettings">
+            <app-settings></app-settings>
+          </div>
+
           <!-- Form Section -->
-          <div class="form-section" *ngIf="showForm">
+          <div class="form-section" *ngIf="showForm && !showSettings">
             <app-prompt-form
               [editPrompt]="editingPrompt"
               (formSubmit)="onFormSubmit($event)"
@@ -52,7 +65,7 @@ import { Prompt, PromptFormData } from './models/prompt.interface';
           </div>
 
           <!-- List Section -->
-          <div class="list-section" *ngIf="!showForm">
+          <div class="list-section" *ngIf="!showForm && !showSettings">
             <app-prompt-list
               [prompts]="prompts"
               (editPrompt)="onEditPrompt($event)"
@@ -76,6 +89,7 @@ import { Prompt, PromptFormData } from './models/prompt.interface';
 export class App implements OnInit {
   prompts: Prompt[] = [];
   showForm = false;
+  showSettings = false;
   editingPrompt: Prompt | null = null;
   showToast = false;
   toastMessage = '';
@@ -90,6 +104,13 @@ export class App implements OnInit {
 
   toggleForm(): void {
     this.showForm = true;
+    this.showSettings = false;
+    this.editingPrompt = null;
+  }
+
+  toggleSettings(): void {
+    this.showSettings = !this.showSettings;
+    this.showForm = false;
     this.editingPrompt = null;
   }
 

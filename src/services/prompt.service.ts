@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Prompt, PromptFormData } from '../models/prompt.interface';
+import { Prompt, PromptFormData, GlobalSettings } from '../models/prompt.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,13 @@ import { Prompt, PromptFormData } from '../models/prompt.interface';
 export class PromptService {
   private prompts: Prompt[] = [];
   private promptsSubject = new BehaviorSubject<Prompt[]>([]);
+  private globalSettings: GlobalSettings = {
+    topK: 40,
+    temperature: 0.7,
+    maxOutputTokens: 2048,
+    topP: 0.9
+  };
+  private settingsSubject = new BehaviorSubject<GlobalSettings>(this.globalSettings);
 
   constructor() {
     // Initialize with sample data
@@ -16,6 +23,15 @@ export class PromptService {
 
   getPrompts(): Observable<Prompt[]> {
     return this.promptsSubject.asObservable();
+  }
+
+  getGlobalSettings(): Observable<GlobalSettings> {
+    return this.settingsSubject.asObservable();
+  }
+
+  updateGlobalSettings(settings: GlobalSettings): void {
+    this.globalSettings = { ...settings };
+    this.settingsSubject.next(this.globalSettings);
   }
 
   createPrompt(formData: PromptFormData): Prompt {
@@ -84,6 +100,7 @@ export class PromptService {
           'Updated to include tone consistency requirements',
           'Added brand alignment guidelines'
         ],
+        jsonSchema: '{\n  "type": "object",\n  "properties": {\n    "content": {\n      "type": "string",\n      "description": "Generated content"\n    },\n    "tone": {\n      "type": "string",\n      "enum": ["professional", "casual", "formal"]\n    }\n  },\n  "required": ["content"]\n}',
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-20')
       },
@@ -104,6 +121,7 @@ export class PromptService {
           'Added security vulnerability checks',
           'Enhanced documentation requirements'
         ],
+        jsonSchema: '{\n  "type": "object",\n  "properties": {\n    "issues": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "type": {"type": "string"},\n          "severity": {"type": "string"},\n          "description": {"type": "string"}\n        }\n      }\n    }\n  }\n}',
         createdAt: new Date('2024-01-10'),
         updatedAt: new Date('2024-01-18')
       }
