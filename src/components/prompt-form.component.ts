@@ -53,23 +53,6 @@ import { Prompt, PromptFormData } from '../models/prompt.interface';
           </div>
         </div>
 
-        <!-- JSON Schema -->
-        <div class="form-group">
-          <label for="jsonSchema" class="form-label">JSON Schema (Optional)</label>
-          <p class="form-helper">Define the expected output structure in JSON Schema format</p>
-          <textarea 
-            id="jsonSchema" 
-            formControlName="jsonSchema" 
-            class="form-textarea json-schema"
-            [class.error]="promptForm.get('jsonSchema')?.invalid && promptForm.get('jsonSchema')?.touched"
-            rows="8"
-            placeholder='{\n  "type": "object",\n  "properties": {\n    "result": {\n      "type": "string",\n      "description": "The generated result"\n    }\n  },\n  "required": ["result"]\n}'></textarea>
-          <div *ngIf="promptForm.get('jsonSchema')?.invalid && promptForm.get('jsonSchema')?.touched" 
-               class="error-message">
-            <span *ngIf="promptForm.get('jsonSchema')?.errors?.['invalidJson']">Please enter valid JSON format</span>
-          </div>
-        </div>
-
         <!-- Instruction Paragraphs -->
         <div class="form-group">
           <label for="instructionParagraphs" class="form-label">Instruction Paragraphs</label>
@@ -270,7 +253,8 @@ export class PromptFormComponent implements OnInit {
               : [this.fb.control('', Validators.required)])
           : [],
         this.isEditMode ? Validators.required : null
-      )
+      ),
+      jsonSchema: [this.editPrompt?.jsonSchema || '', [this.validateJsonSchema]]
     });
   }
 
@@ -346,8 +330,7 @@ export class PromptFormComponent implements OnInit {
       const control = this.promptForm.get(key);
       if (control instanceof FormArray) {
         control.controls.forEach(c => c.markAsTouched());
-          ),
-          jsonSchema: [this.editPrompt?.jsonSchema || '', [this.validateJsonSchema]]
+      } else {
         control?.markAsTouched();
       }
     });
