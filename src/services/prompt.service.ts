@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Observable, Subject } from 'rxjs';
 import { Prompt, PromptFormData, GlobalSettings } from '../models/prompt.interface';
 import { AppConfigService } from './appConfig/app-config.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +25,11 @@ export class PromptService {
   private settingsSubject = new BehaviorSubject<GlobalSettings>(this.globalSettings);
   liquidUrl ="";
 
-  constructor(public config: AppConfigService) {
+  constructor(public config: AppConfigService,private http:HttpClient) {
     // Initialize with sample data
     this.loadSampleData();
      this.liquidUrl = this.config.getAPIURL(true, 'apiUrl', 'workFlowQueryUrl');
-     debugger
+    //  debugger
      console.log(this.liquidUrl);
      
   }
@@ -155,5 +156,21 @@ export class PromptService {
       
     });
     this.promptsSubject.next([...this.prompts]);
+  }
+    fetchUserDetails(emailId: string): Observable<any[]> {
+    const obj = {
+      view: 'userDetails',
+      filter: {
+        emailId: emailId,
+      },
+    };
+    return this.http.post<any[]>(`${this.liquidUrl}`, obj).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      map((el: any) => {
+        if (el.length) {         
+          return el;
+        }
+      })
+    );
   }
 }

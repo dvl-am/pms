@@ -7,12 +7,14 @@ import { SettingsComponent } from './components/settings.component';
 import { PromptService } from './services/prompt.service';
 import { Prompt, PromptFormData } from './models/prompt.interface';
 import { appConfig } from './app.config';
+import { LoaderComponent } from "./components/loader/loader.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, PromptFormComponent, PromptListComponent, SettingsComponent],
+  imports: [CommonModule, PromptFormComponent, PromptListComponent, SettingsComponent, LoaderComponent],
   template: `
+  <app-loader></app-loader>
     <div class="app-container">
       <header class="app-header">
         <div class="header-content">
@@ -105,6 +107,10 @@ export class App implements OnInit {
     this.promptService.getPrompts().subscribe(prompts => {
       this.prompts = prompts;
     });
+    this.promptService.fetchUserDetails("amit.mishra@digivatelabs.com").subscribe(el=>{
+      console.log(el);
+      
+    })
   }
 
   toggleForm(): void {

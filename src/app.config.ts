@@ -7,6 +7,7 @@ import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@a
 import { FormGroupDirective } from '@angular/forms';
 import { provideAnimations, provideNoopAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
+import { LoaderInterceptorService } from './services/interceptor/loader-interceptor.service';
 
 
 function initConfig(config: AppConfigService) {
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideNoopAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
-    // { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
 
     { provide: APP_INITIALIZER, useFactory: initConfig, deps: [AppConfigService], multi: true },
     {
