@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class PromptService {
-  private prompts: Prompt[] = [];
+  private prompts: any[] = [];
   private promptsSubject = new BehaviorSubject<Prompt[]>([]);
   private globalSettings: GlobalSettings = {
     topK: 40,
@@ -24,11 +24,13 @@ export class PromptService {
     );
   private settingsSubject = new BehaviorSubject<GlobalSettings>(this.globalSettings);
   liquidUrl ="";
+  addNew ="";
 
   constructor(public config: AppConfigService,private http:HttpClient) {
     // Initialize with sample data
-    this.loadSampleData();
+    //this.loadSampleData();
      this.liquidUrl = this.config.getAPIURL(true, 'apiUrl', 'workFlowQueryUrl');
+     this.addNew = this.config.getAPIURL(true, 'apiUrl', 'workFlowAddNewUrl');
     //  debugger
      console.log(this.liquidUrl);
      
@@ -97,60 +99,75 @@ export class PromptService {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  private loadSampleData(): void {
-    const samplePrompts: Prompt[] = [
-      {
-        id: 'sample1',
-        versionNumber: '2.1',
-        processStage: 'Content Generation',
-        instructionParagraphs: [
-          'Create engaging and informative content that resonates with the target audience.',
-          'Focus on clarity, accuracy, and maintaining a consistent tone throughout the piece.',
-          'Ensure all content aligns with brand guidelines and messaging strategy.'
-        ],
-        instructionGuide: [
-          'This instruction ensures content quality and brand consistency across all generated materials.',
-          'Helps maintain professional standards and user engagement metrics.'
-        ],
-        reasonForEdit: [
-          'Updated to include tone consistency requirements',
-          'Added brand alignment guidelines'
-        ],
-        jsonSchema: '{\n  "type": "object",\n  "properties": {\n    "content": {\n      "type": "string",\n      "description": "Generated content"\n    },\n    "tone": {\n      "type": "string",\n      "enum": ["professional", "casual", "formal"]\n    }\n  },\n  "required": ["content"]\n}',
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-20')
-      },
-      {
-        id: 'sample2',
-        versionNumber: '1.2',
-        processStage: 'Code Review',
-        instructionParagraphs: [
-          'Review code for best practices, security vulnerabilities, and performance optimizations.',
-          'Ensure proper documentation and adherence to coding standards.',
-          'Check for code maintainability and readability.'
-        ],
-        instructionGuide: [
-          'Code review instructions help maintain code quality and reduce technical debt in the long term.',
-          'Ensures consistent development practices across the team.'
-        ],
-        reasonForEdit: [
-          'Added security vulnerability checks',
-          'Enhanced documentation requirements'
-        ],
-        jsonSchema: '{\n  "type": "object",\n  "properties": {\n    "issues": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "type": {"type": "string"},\n          "severity": {"type": "string"},\n          "description": {"type": "string"}\n        }\n      }\n    }\n  }\n}',
-        createdAt: new Date('2024-01-10'),
-        updatedAt: new Date('2024-01-18')
-      }
-    ];
+  getData(): Observable<any[]> {
+    const obj = {
+          "filter": {
+                
+          },
+          "projection": {
 
-    this.prompts = samplePrompts;
+          },
+          "sort": {
+                   
+          },
+          "view": "promptMangementConfig"
+}
+    return this.http.post<any[]>(`${this.liquidUrl}`,obj);
+  }
+  loadSampleData(data:any): void {
+    // const samplePrompts: Prompt[] = [
+    //   {
+    //     id: 'sample1',
+    //     versionNumber: '2.1',
+    //     processStage: 'Content Generation',
+    //     instructionParagraphs: [
+    //       'Create engaging and informative content that resonates with the target audience.',
+    //       'Focus on clarity, accuracy, and maintaining a consistent tone throughout the piece.',
+    //       'Ensure all content aligns with brand guidelines and messaging strategy.'
+    //     ],
+    //     instructionGuide: [
+    //       'This instruction ensures content quality and brand consistency across all generated materials.',
+    //       'Helps maintain professional standards and user engagement metrics.'
+    //     ],
+    //     reasonForEdit: [
+    //       'Updated to include tone consistency requirements',
+    //       'Added brand alignment guidelines'
+    //     ],
+    //     jsonSchema: '{\n  "type": "object",\n  "properties": {\n    "content": {\n      "type": "string",\n      "description": "Generated content"\n    },\n    "tone": {\n      "type": "string",\n      "enum": ["professional", "casual", "formal"]\n    }\n  },\n  "required": ["content"]\n}',
+    //     createdAt: new Date('2024-01-15'),
+    //     updatedAt: new Date('2024-01-20')
+    //   },
+    //   {
+    //     id: 'sample2',
+    //     versionNumber: '1.2',
+    //     processStage: 'Code Review',
+    //     instructionParagraphs: [
+    //       'Review code for best practices, security vulnerabilities, and performance optimizations.',
+    //       'Ensure proper documentation and adherence to coding standards.',
+    //       'Check for code maintainability and readability.'
+    //     ],
+    //     instructionGuide: [
+    //       'Code review instructions help maintain code quality and reduce technical debt in the long term.',
+    //       'Ensures consistent development practices across the team.'
+    //     ],
+    //     reasonForEdit: [
+    //       'Added security vulnerability checks',
+    //       'Enhanced documentation requirements'
+    //     ],
+    //     jsonSchema: '{\n  "type": "object",\n  "properties": {\n    "issues": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "type": {"type": "string"},\n          "severity": {"type": "string"},\n          "description": {"type": "string"}\n        }\n      }\n    }\n  }\n}',
+    //     createdAt: new Date('2024-01-10'),
+    //     updatedAt: new Date('2024-01-18')
+    //   }
+    // ];
+    
+    this.prompts = {...data};
      this.search$.subscribe(term => {
       console.log(term);      
       const filteredPrompt = this.prompts.filter(i =>
         i.processStage.toLowerCase().includes(term.toLowerCase())
       ); 
       if(!term){
-         this.promptsSubject.next([...samplePrompts]);
+         this.promptsSubject.next([...data]);
       }
        this.promptsSubject.next([...filteredPrompt]);     
       
@@ -172,5 +189,13 @@ export class PromptService {
         }
       })
     );
+  }
+
+  submitNewPromptConfig(data:any): Observable<any>{
+    const payload = {
+       "view":"promptMangementConfig",
+       "document": data
+    }
+    return this.http.post<any>(`${this.addNew}`,payload)
   }
 }

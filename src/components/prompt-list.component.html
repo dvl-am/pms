@@ -13,7 +13,7 @@
       <div class="prompt-grid" *ngIf="prompts.length > 0">
         <div *ngFor="let prompt of prompts; trackBy: trackByPromptId" class="prompt-card">
           <div class="card-header">
-            <div class="version-badge">v{{ prompt.versionNumber }}</div>
+            <div class="version-badge">v{{ prompt.currentVersion }}</div>
             <div class="card-actions">
               <button class="action-btn edit-btn" (click)="onEdit(prompt)" title="Edit prompt">✏️</button>
               <button class="action-btn delete-btn" (click)="onDelete(prompt)" title="Delete prompt">🗑️</button>
@@ -24,35 +24,35 @@
             <h3 class="process-stage">{{ prompt.processStage }}</h3>
             <div class="instruction-preview">
               <div class="instruction-paragraphs">
-                <p *ngFor="let paragraph of prompt.instructionParagraphs.slice(0, 1)" class="instruction-text">{{ truncateText(paragraph, 100) }}</p>
+                <p *ngFor="let versionItem of getCurrentVersionItem(prompt,prompt.currentVersion)" class="instruction-text">{{ truncateText(versionItem.instructions[0].paragraph, 100) }}</p>
               </div>
             </div>
 
             <div class="instruction-guide">
               <h4 class="guide-label">Purpose</h4>
               <div class="guide-items">
-                <p *ngFor="let guide of prompt.instructionGuide.slice(0, 1)" class="guide-text">{{ truncateText(guide, 80) }}</p>
+                <p *ngFor="let versionItem of getCurrentVersionItem(prompt,prompt.currentVersion)" class="guide-text">{{ truncateText(versionItem.instructions[0].guide, 80) }}</p>
               </div>
             </div>
 
             <div *ngIf="prompt.reasonForEdit && prompt.reasonForEdit.length > 0" class="edit-reason">
               <h4 class="reason-label">Last Edit</h4>
               <div class="reason-items">
-                <p *ngFor="let reason of prompt.reasonForEdit.slice(0, 1)" class="reason-text">{{ reason }}</p>
+                <p *ngFor="let versionItem of getCurrentVersionItem(prompt,prompt.currentVersion)" class="reason-text">{{ versionItem.instructions[0].reasonForChange }}</p>
                 
               </div>
             </div>
             <div>
-               <p *ngIf="prompt.instructionParagraphs.length > 2" class="more-indicator">
-                  +{{ prompt.instructionParagraphs.length - 2 }} more paragraph{{ prompt.instructionParagraphs.length - 2 === 1 ? "" : "s" }}
+               <p *ngIf="prompt.versions.length > 2" class="more-indicator">
+                  +{{ prompt.versions.length - 2 }} more paragraph{{ prompt.versions.length - 2 === 1 ? "" : "s" }}
                 </p>
             </div>
           </div>
 
           <div class="card-footer">
             <div class="timestamp-info">
-              <div class="timestamp">Created: {{ formatDate(prompt.createdAt) }}</div>
-              <div *ngIf="prompt.updatedAt && prompt.updatedAt !== prompt.createdAt" class="timestamp">Updated: {{ formatDate(prompt.updatedAt) }}</div>
+              <div class="timestamp">Created: {{ formatDate(prompt?.createdAt) }}</div>
+              <div *ngIf="prompt?.updatedAt && prompt?.updatedAt !== prompt?.createdAt" class="timestamp">Updated: {{ formatDate(prompt?.updatedAt) }}</div>
             </div>
           </div>
         </div>

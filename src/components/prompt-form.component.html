@@ -9,13 +9,13 @@
           <!-- Version Number -->
           <div class="form-group">
             <label for="versionNumber" class="form-label">Version Number</label>
-            <select 
+            <select  
               id="versionNumber" 
               formControlName="versionNumber" 
               class="form-select"
               [class.error]="promptForm.get('versionNumber')?.invalid && promptForm.get('versionNumber')?.touched">
               <option value="">Select version</option>
-              <option *ngFor="let version of versionOptions" [value]="version">
+              <option *ngFor="let version of versionOptions" [value]="version" >
                 {{ version }}
               </option>
             </select>
@@ -179,6 +179,7 @@
 
               <div class="reason-form-group">
 
+                @if(isEditMode){
                <div class="form-group">
                <label for="reasonForChange" class="form-label">Reason for Edit</label>
                 <input 
@@ -188,6 +189,12 @@
                   
                   [placeholder]="'Edit reason '" />
                </div>
+                }
+                @else {
+                  <div class="form-group"></div>
+                }
+
+
                  <div class="remove-form-array">
                 <button 
                   type="button" 
@@ -267,44 +274,6 @@
         </div> -->
 
         <!-- Reason for Edit -->
-        <div class="form-group" *ngIf="isEditMode">
-          <label for="reasonForEdit" class="form-label">Reason for Edit</label>
-          <div formArrayName="reasonForEdit" class="form-array">
-            <div *ngFor="let reason of reasonForEditArray.controls; let i = index" 
-                 class="form-array-item">
-              <div class="array-item-content">
-                <input 
-                  type="text"
-                  [formControlName]="i"
-                  class="form-input"
-                  [class.error]="reason.invalid && reason.touched"
-                  [placeholder]="'Edit reason ' + (i + 1) + '...'">
-                <button 
-                  type="button" 
-                  class="remove-btn"
-                  (click)="removeReasonForEdit(i)"
-                  [disabled]="reasonForEditArray.length <= 1"
-                  title="Remove reason">
-                  ✕
-                </button>
-              </div>
-              <div *ngIf="reason.invalid && reason.touched" 
-                   class="error-message">
-                Reason for edit is required
-              </div>
-            </div>
-            <button 
-              type="button" 
-              class="add-btn"
-              (click)="addReasonForEdit()">
-              + Add Edit Reason
-            </button>
-          </div>
-          <div *ngIf="reasonForEditArray.invalid && reasonForEditArray.touched" 
-               class="error-message">
-            At least one reason for edit is required when updating
-          </div>
-        </div>
 
         <!-- Form Actions -->
         <div class="form-actions">

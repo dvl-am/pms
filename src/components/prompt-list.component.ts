@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Prompt } from "../models/prompt.interface";
+import { PromptService } from "../services/prompt.service";
 
 @Component({
   selector: "app-prompt-list",
@@ -9,20 +10,34 @@ import { Prompt } from "../models/prompt.interface";
   templateUrl: "./prompt-list.component.html",
   styleUrls: ["./prompt-list.component.css"],
 })
-export class PromptListComponent {
+export class PromptListComponent implements OnInit{
 
-  @Input() prompts: Prompt[] = [];
+
+  @Input() prompts: any[] = [];
   @Output() editPrompt = new EventEmitter<Prompt>();
   @Output() deletePrompt = new EventEmitter<Prompt>();
   show = false;
   message: string="";
   currentPrompt!: Prompt;
 
+  constructor(private promptService:PromptService){
+
+  }
+  ngOnInit(): void {
+    this.promptService.getData().subscribe(data=>{
+      if(data?.length){
+        //debugger
+        this.prompts = [...data];
+        this.promptService.loadSampleData(data)
+      }
+    })
+  }
+
   trackByPromptId(index: number, prompt: Prompt): string {
     return prompt.id;
   }
 
-  onEdit(prompt: Prompt): void {
+  onEdit(prompt: any): void {
     this.editPrompt.emit(prompt);
   }
 
@@ -40,6 +55,7 @@ export class PromptListComponent {
   }
 
   formatDate(date: Date): string {
+    if(!date) return '';
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -61,7 +77,11 @@ export class PromptListComponent {
         this.deletePrompt.emit(this.currentPrompt);
 
     }
+  }
 
+  getCurrentVersionItem(promptItem: any, version: string) {
+    console.log([promptItem.versions.find((v: any) => v.versionNumber === version)])
+      return [promptItem.versions.find((v: any) => v.versionNumber === version)]
     
-}
+    }
 }

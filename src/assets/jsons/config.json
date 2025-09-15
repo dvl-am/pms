@@ -1,5 +1,6 @@
 {
   "env": "DEV",
   "apiUrl": "https://dev.digivatelabs.com:10443/",
-  "workFlowQueryUrl": "api/workflow/query"
+  "workFlowQueryUrl": "api/workflow/query",
+  "workFlowAddNewUrl":"api/workflow/insertone"
 }

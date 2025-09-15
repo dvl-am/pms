@@ -58,7 +58,8 @@ get instructions(): FormArray {
   ) {}
 
   ngOnInit(): void {
-    this.versionOptions = this.promptService.getVersionOptions();
+    
+    this.versionOptions=['1'] //= this.promptService.getVersionOptions();
     this.initializeForm();
   }
 
@@ -71,8 +72,10 @@ get instructions(): FormArray {
   }
 
   private initializeForm(): void {
+    debugger
+    console.log(this.editPrompt)
     this.promptForm = this.fb.group({
-      versionNumber: [this.editPrompt?.versionNumber || '', Validators.required],
+      versionNumber: [this.editPrompt?.versionNumber || '1', Validators.required],
       processStage: [this.editPrompt?.processStage || '', Validators.required],
       jsonSchema:this.fb.control('', Validators.required),
       prompt: this.fb.control('', Validators.required),
@@ -159,22 +162,48 @@ get instructions(): FormArray {
       
     console.log(this.promptForm.value);
       // Simulate API call delay
-      setTimeout(() => {
-        const formValue = this.promptForm.value;
-        // Filter out empty strings from arrays
-        const cleanedValue = {
-          ...formValue,
-          instructionParagraphs: formValue.instructionParagraphs.filter((p: string) => p.trim()),
-          instructionGuide: formValue.instructionGuide.filter((g: string) => g.trim()),
-          reasonForEdit: formValue.reasonForEdit.filter((r: string) => r.trim())
-        };
-        this.formSubmit.emit(cleanedValue);
-        this.isSubmitting = false;
-      }, 500);
-    } else {
-      this.markFormGroupTouched();
+    //   setTimeout(() => {
+    //     const formValue = this.promptForm.value;
+    //     // Filter out empty strings from arrays
+    //     const cleanedValue = {
+    //       ...formValue,
+    //       instructionParagraphs: formValue.instructionParagraphs.filter((p: string) => p.trim()),
+    //       instructionGuide: formValue.instructionGuide.filter((g: string) => g.trim()),
+    //       reasonForEdit: formValue.reasonForEdit.filter((r: string) => r.trim())
+    //     };
+    //     this.formSubmit.emit(cleanedValue);
+    //     this.isSubmitting = false;
+    //   }, 500);
+    // } else {
+    //   this.markFormGroupTouched();
+    // }
+
+    const submitObj = {
+  "processStage": this.promptForm.value.processStage,
+  "versions": [
+    {
+      "versionNumber":  this.promptForm.value.versionNumber,
+      "jsonSchema": this.promptForm.value.jsonSchema,
+      "prompt": this.promptForm.value.prompt,
+      "temperature": this.promptForm.value.temperature,
+      "topP": this.promptForm.value.topP,
+      "topK": this.promptForm.value.topK,
+      "maxOutputTokens": this.promptForm.value.maxOutputTokens,
+      "thinkingBudget": this.promptForm.value.thinkingBudget,
+      "parentVersion": "",
+      "instructions": [
+        ...this.promptForm.value.instructions
+      ]
     }
-  }
+  ],
+  "currentVersion": this.promptForm.value.versionNumber
+}
+  this.promptService.submitNewPromptConfig(submitObj).subscribe({
+    next: (response) => {
+      console.log('Prompt configuration submitted successfully:', response);
+    }})
+    }}
+
 
   onCancel(): void {
     this.formCancel.emit();
