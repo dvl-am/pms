@@ -43,7 +43,8 @@
         </div>
 
         <!-- JSON Schema -->
-        <div class="form-group">
+         <div class="form-grid">
+          <div class="form-group">
           <label for="jsonSchema" class="form-label">JSON Schema (Optional)</label>
           <p class="form-helper">Define the expected output structure in JSON Schema format</p>
           <textarea 
@@ -76,14 +77,17 @@
             <span *ngIf="promptForm.get('prompt')?.errors?.['invalidJson']">Please enter valid JSON format</span>
           </div>
         </div>
+         </div>
+        
 
-        <div class="form-group">
+        <div class="form-grid">
+          <div class="form-group">
           <label for="temperature" class="form-label">Temperature</label>
           <!-- <p class="form-helper">Define Prompt</p> -->
           <input type="text" 
             id="temperature" 
             formControlName="temperature" 
-            class=""
+            class="form-input"
             [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
             placeholder=''/>
         </div>
@@ -94,18 +98,20 @@
           <input type="text" 
             id="topK" 
             formControlName="topK" 
-            class=""
+            class="form-input"
             [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
             placeholder=''/>
         </div>
+        </div>
 
-        <div class="form-group">
+        <div class="form-grid">
+          <div class="form-group">
           <label for="topP" class="form-label">Top P</label>
           <!-- <p class="form-helper">Define Prompt</p> -->
           <input type="text" 
             id="topP" 
             formControlName="topP" 
-            class=""
+            class="form-input"
             [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
             placeholder=''/>
         </div>
@@ -116,9 +122,10 @@
           <input type="text" 
             id="maxOutputTokens" 
             formControlName="maxOutputTokens" 
-            class=""
+            class="form-input"
             [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
             placeholder=''/>
+        </div>
         </div>
 
         <div class="form-group">
@@ -127,7 +134,7 @@
           <input type="text" 
             id="thinkingBudget" 
             formControlName="thinkingBudget" 
-            class=""
+            class="form-input"
             [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
             placeholder=''/>
         </div>
@@ -142,7 +149,8 @@
               <div class="array-item-content">
                 <div [formGroupName]="i">
 
-            <div class="form-group">
+              <div class="form-grid">
+                <div class="form-group">
           <label for="paragraph" class="form-label">Paragraph</label>
           <!-- <p class="form-helper">Define Prompt</p> -->
           <textarea 
@@ -166,17 +174,21 @@
             rows="8"
             placeholder=''></textarea>            
             </div>
+              </div>
 
 
-                <label for="reasonForChange" class="form-label">Reason for Edit</label>
+              <div class="reason-form-group">
+
+               <div class="form-group">
+               <label for="reasonForChange" class="form-label">Reason for Edit</label>
                 <input 
                   type="text"
                   formControlName="reasonForChange"
                   class="form-input"
                   
                   [placeholder]="'Edit reason '" />
-
-
+               </div>
+                 <div class="remove-form-array">
                 <button 
                   type="button" 
                   class="remove-btn"
@@ -185,6 +197,12 @@
                   title="Remove paragraph">
                   ✕
                 </button>
+                 </div>
+              </div>
+
+
+
+                
               </div>
               </div>
               <!-- <div *ngIf="paragraph.invalid && paragraph.touched" 
@@ -192,12 +210,14 @@
                 Instruction paragraph is required
               </div> -->
             </div>
-            <button 
+            <div class="add-int-group">
+                <button 
               type="button" 
               class="add-btn"
               (click)="addInstructionToArray()">
               + Add Instruction
             </button>
+            </div>
           </div>
           <!-- <div *ngIf="instructionParagraphsArray.invalid && instructionParagraphsArray.touched" 
                class="error-message">
