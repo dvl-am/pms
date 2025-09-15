@@ -166,7 +166,7 @@ export class PromptService {
     //   }
     // ];
     
-    this.prompts = {...data};
+    this.prompts = [...data];
      this.search$.subscribe(term => {
       console.log(term);      
       const filteredPrompt = this.prompts.filter(i =>
