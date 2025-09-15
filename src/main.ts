@@ -35,6 +35,9 @@ import { Prompt, PromptFormData } from './models/prompt.interface';
         <div class="main-content">
           <!-- Action Bar -->
           <div class="action-bar" *ngIf="!showSettings">
+      
+            <input type="text" class="form-input m-r"  placeholder="Search..."
+      (input)="onSearch($event)">
             <button 
               *ngIf="!showForm" 
               class="btn btn-primary create-btn"
@@ -155,6 +158,10 @@ export class App implements OnInit {
     setTimeout(() => {
       this.showToast = false;
     }, 3000);
+  }
+    onSearch(event: any) {
+    const value = event.target.value;
+    this.promptService.updateSearch(value);
   }
 }
 

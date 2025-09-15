@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
 import { Prompt, PromptFormData, GlobalSettings } from '../models/prompt.interface';
 
 @Injectable({
@@ -14,6 +14,12 @@ export class PromptService {
     maxOutputTokens: 2048,
     topP: 0.9
   };
+    private searchSubject = new Subject<string>();
+  search$ = this.searchSubject.asObservable()
+    .pipe(
+      debounceTime(400),          // wait 400ms after typing
+      distinctUntilChanged()      // emit only if value changed
+    );
   private settingsSubject = new BehaviorSubject<GlobalSettings>(this.globalSettings);
 
   constructor() {
@@ -21,6 +27,9 @@ export class PromptService {
     this.loadSampleData();
   }
 
+  updateSearch(term: string) {
+    this.searchSubject.next(term);
+  }
   getPrompts(): Observable<Prompt[]> {
     return this.promptsSubject.asObservable();
   }
@@ -128,6 +137,17 @@ export class PromptService {
     ];
 
     this.prompts = samplePrompts;
+     this.search$.subscribe(term => {
+      console.log(term);      
+      const filteredPrompt = this.prompts.filter(i =>
+        i.processStage.toLowerCase().includes(term.toLowerCase())
+      ); 
+      if(!term){
+         this.promptsSubject.next([...samplePrompts]);
+      }
+       this.promptsSubject.next([...filteredPrompt]);     
+      
+    });
     this.promptsSubject.next([...this.prompts]);
   }
 }

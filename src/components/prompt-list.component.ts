@@ -55,9 +55,9 @@ export class PromptListComponent {
       return schema;
     }
   }
-  onConfirm(arg0: boolean) {
+  onConfirm(arg: boolean) {
     this.show = false;
-    if(arg0){
+    if(arg){
         this.deletePrompt.emit(this.currentPrompt);
 
     }
