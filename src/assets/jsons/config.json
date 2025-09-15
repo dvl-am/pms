@@ -2,5 +2,7 @@
   "env": "DEV",
   "apiUrl": "https://dev.digivatelabs.com:10443/",
   "workFlowQueryUrl": "api/workflow/query",
-  "workFlowAddNewUrl":"api/workflow/insertone"
+  "workFlowAddNewUrl":"api/workflow/insertone",
+  "workFlowUpdateMany":"api/workflow/updatemany"
+
 }

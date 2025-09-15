@@ -24,7 +24,7 @@ function validateJsonSchema(control: AbstractControl): ValidationErrors | null {
   styleUrls: ['./prompt-form.component.css']
 })
 export class PromptFormComponent implements OnInit {
-  @Input() editPrompt: Prompt | null = null;
+  @Input() editPrompt: any | null = null;
   @Output() formSubmit = new EventEmitter<PromptFormData>();
   @Output() formCancel = new EventEmitter<void>();
 
@@ -63,58 +63,68 @@ get instructions(): FormArray {
     this.initializeForm();
   }
 
-  addInstructionItem(){
+  addInstructionItem(paragraph = '', guide = '', reasonForChange = '') {
     return this.fb.group({
-      paragraph: this.fb.control('', Validators.required),
-      guide: this.fb.control('', Validators.required),
-      reasonForChange: this.fb.control('', Validators.required)
+      paragraph: this.fb.control(paragraph, Validators.required),
+      guide: this.fb.control(guide, Validators.required),
+      reasonForChange: this.fb.control(reasonForChange, Validators.required)
     })
+  }
+
+  getInstructionItems(instructionsArray:any[]){
+    return instructionsArray.map(item=> this.addInstructionItem(item?.paragraph, 
+      item?.guide, 
+      item?.reasonForChange
+    ))
   }
 
   private initializeForm(): void {
     debugger
     console.log(this.editPrompt)
+    const currentIndex = this.editPrompt.currentVersion
+    const currentVersionItem = this.editPrompt.versions.find((item:any)=> item.versionNumber ===currentIndex) 
     this.promptForm = this.fb.group({
-      versionNumber: [this.editPrompt?.versionNumber || '1', Validators.required],
-      processStage: [this.editPrompt?.processStage || '', Validators.required],
-      jsonSchema:this.fb.control('', Validators.required),
-      prompt: this.fb.control('', Validators.required),
-      temperature: this.fb.control('', Validators.required),
-      topK: this.fb.control('', Validators.required),
-      topP: this.fb.control('', Validators.required),
-      maxOutputTokens: this.fb.control('', Validators.required),
-      thinkingBudget: this.fb.control('', Validators.required),
+      versionNumber: this.fb.control(this.editPrompt?.versionNumber || '1', Validators.required),
+      processStage: this.fb.control(this.editPrompt?.processStage || '', Validators.required),
+      jsonSchema:this.fb.control(currentVersionItem?.jsonSchema || '', Validators.required),
+      prompt: this.fb.control(currentVersionItem?.prompt || '', Validators.required),
+      temperature: this.fb.control(currentVersionItem?.temperature || '', Validators.required),
+      topK: this.fb.control(currentVersionItem?.topK || '', Validators.required),
+      topP: this.fb.control(currentVersionItem?.topP || '', Validators.required),
+      maxOutputTokens: this.fb.control(currentVersionItem?.maxOutputTokens || '', Validators.required),
+      thinkingBudget: this.fb.control(currentVersionItem?.maxOutputTokens || '', Validators.required),
       parentVersion: this.fb.control(''),
-      instructions: this.fb.array([this.addInstructionItem()])
+      instructions: this.fb.array(currentVersionItem?.instructions?.length ?this.getInstructionItems(currentVersionItem?.instructions):[this.addInstructionItem()]),
     })
+    
   }
-  private _initializeForm(): void {
-    this.promptForm = this.fb.group({
-      versionNumber: [this.editPrompt?.versionNumber || '1.0', Validators.required],
-      processStage: [this.editPrompt?.processStage || '', Validators.required],
-      instructionParagraphs: this.fb.array(
-        this.editPrompt?.instructionParagraphs?.length 
-          ? this.editPrompt.instructionParagraphs.map(p => this.fb.control(p, Validators.required))
-          : [this.fb.control('', Validators.required)],
-        Validators.required
-      ),
-      instructionGuide: this.fb.array(
-        this.editPrompt?.instructionGuide?.length 
-          ? this.editPrompt.instructionGuide.map(g => this.fb.control(g, Validators.required))
-          : [this.fb.control('', Validators.required)],
-        Validators.required
-      ),
-      reasonForEdit: this.fb.array(
-        this.isEditMode 
-          ? (this.editPrompt?.reasonForEdit?.length 
-              ? this.editPrompt.reasonForEdit.map(r => this.fb.control(r, Validators.required))
-              : [this.fb.control('', Validators.required)])
-          : [],
-        this.isEditMode ? Validators.required : null
-      ),
-      jsonSchema: [this.editPrompt?.jsonSchema || '', [validateJsonSchema]]
-    });
-  }
+  // private _initializeForm(): void {
+  //   this.promptForm = this.fb.group({
+  //     versionNumber: [this.editPrompt?.versionNumber || '1.0', Validators.required],
+  //     processStage: [this.editPrompt?.processStage || '', Validators.required],
+  //     instructionParagraphs: this.fb.array(
+  //       this.editPrompt?.instructionParagraphs?.length 
+  //         ? this.editPrompt.instructionParagraphs.map(p => this.fb.control(p, Validators.required))
+  //         : [this.fb.control('', Validators.required)],
+  //       Validators.required
+  //     ),
+  //     instructionGuide: this.fb.array(
+  //       this.editPrompt?.instructionGuide?.length 
+  //         ? this.editPrompt.instructionGuide.map(g => this.fb.control(g, Validators.required))
+  //         : [this.fb.control('', Validators.required)],
+  //       Validators.required
+  //     ),
+  //     reasonForEdit: this.fb.array(
+  //       this.isEditMode 
+  //         ? (this.editPrompt?.reasonForEdit?.length 
+  //             ? this.editPrompt.reasonForEdit.map(r => this.fb.control(r, Validators.required))
+  //             : [this.fb.control('', Validators.required)])
+  //         : [],
+  //       this.isEditMode ? Validators.required : null
+  //     ),
+  //     jsonSchema: [this.editPrompt?.jsonSchema || '', [validateJsonSchema]]
+  //   });
+  // }
 
   addInstructionParagraph(): void {
     this.instructionParagraphsArray.push(this.fb.control('', Validators.required));
@@ -160,6 +170,42 @@ get instructions(): FormArray {
     if (this.promptForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       
+      if(this.isEditMode){
+        console.log(this.promptForm.value);
+        const recordId = this.editPrompt?._id?.$oid
+        const versionToChange = this.promptForm.value.versionNumber
+        const indexOfVersionItemInOrg = this.editPrompt.versions.findIndex((item:any)=> item.versionNumber ===versionToChange)
+        if(indexOfVersionItemInOrg > -1){
+          let versionsCopy = [...this.editPrompt.versions]
+          versionsCopy[indexOfVersionItemInOrg] =  {
+      "versionNumber":  this.promptForm.value.versionNumber,
+      "jsonSchema": this.promptForm.value.jsonSchema,
+      "prompt": this.promptForm.value.prompt,
+      "temperature": this.promptForm.value.temperature,
+      "topP": this.promptForm.value.topP,
+      "topK": this.promptForm.value.topK,
+      "maxOutputTokens": this.promptForm.value.maxOutputTokens,
+      "thinkingBudget": this.promptForm.value.thinkingBudget,
+      "parentVersion": "",
+      "instructions": [
+        ...this.promptForm.value.instructions
+      ]
+    }
+          const submitObj = {
+            "processStage": this.promptForm.value.processStage,
+            "versions": [
+              ...versionsCopy
+            ],
+            "currentVersion": this.promptForm.value.versionNumber
+          }
+          this.promptService.updatePromptConfig(recordId, submitObj).subscribe({
+            next: (response) => {
+              console.log('Prompt configuration updated successfully:', response);
+            }})
+          }
+
+
+      }else{
     console.log(this.promptForm.value);
       // Simulate API call delay
     //   setTimeout(() => {
@@ -202,7 +248,10 @@ get instructions(): FormArray {
     next: (response) => {
       console.log('Prompt configuration submitted successfully:', response);
     }})
-    }}
+    }
+      }
+
+  }
 
 
   onCancel(): void {

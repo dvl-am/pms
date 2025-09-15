@@ -23,13 +23,13 @@ import { LoaderComponent } from "./components/loader/loader.component";
 </div></div>
           <div><p class="app-subtitle">Manage your AI prompts intelligently</p> </div>
           <div class="header-actions">
-            <button 
+            <!-- <button 
               class="btn btn-outline"
               (click)="toggleSettings()"
               [class.active]="showSettings">
               <span class="btn-icon">⚙️</span>
               Settings
-            </button>
+            </button> -->
           </div>
         </div>
       </header>
@@ -146,16 +146,19 @@ export class App implements OnInit {
     this.cancelForm();
   }
 
-  onEditPrompt(prompt: Prompt): void {
+  onEditPrompt(prompt: any): void {
     this.editingPrompt = prompt;
     this.showForm = true;
   }
 
-  onDeletePrompt(prompt: Prompt): void {
-    const success = this.promptService.deletePrompt(prompt.id);
-    if (success) {
+  onDeletePrompt(prompt: any): void {
+    //const success = this.promptService.deletePrompt(prompt.id);
+    this.promptService.markPromptItemAsInactive(prompt?._id?.$oid).subscribe(res=>{
+      if (res) {
       this.showToastMessage('Prompt deleted successfully!');
-    }
+      }})
+    
+    
   }
 
   private showToastMessage(message: string): void {

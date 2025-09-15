@@ -25,12 +25,16 @@ export class PromptService {
   private settingsSubject = new BehaviorSubject<GlobalSettings>(this.globalSettings);
   liquidUrl ="";
   addNew ="";
+  updateMany=""
 
   constructor(public config: AppConfigService,private http:HttpClient) {
     // Initialize with sample data
     //this.loadSampleData();
      this.liquidUrl = this.config.getAPIURL(true, 'apiUrl', 'workFlowQueryUrl');
      this.addNew = this.config.getAPIURL(true, 'apiUrl', 'workFlowAddNewUrl');
+     this.updateMany = this.config.getAPIURL(true, 'apiUrl', 'workFlowUpdateMany');
+
+     
     //  debugger
      console.log(this.liquidUrl);
      
@@ -91,6 +95,8 @@ export class PromptService {
     return false;
   }
 
+
+
   getVersionOptions(): string[] {
     return ['1.0', '1.1', '1.2', '2.0', '2.1', '2.2', '3.0', '3.1', '3.2', '4.0'];
   }
@@ -102,7 +108,7 @@ export class PromptService {
   getData(): Observable<any[]> {
     const obj = {
           "filter": {
-                
+                "isActive": "A"
           },
           "projection": {
 
@@ -197,5 +203,30 @@ export class PromptService {
        "document": data
     }
     return this.http.post<any>(`${this.addNew}`,payload)
+  }
+
+    updatePromptConfig(id:string,data:any): Observable<any>{
+    const payload = {
+       "view":"promptMangementConfig",
+          "filter":{
+        "_id": id
+    },
+       "update": data
+    }
+    return this.http.post<any>(`${this.updateMany}`,payload)
+  }
+
+    markPromptItemAsInactive(id: string): Observable<any> {
+    const payload = {
+       "view":"promptMangementConfig",
+          "filter":{
+        "_id": id
+    },
+       "update": {
+        "isActive": "I"
+       }
+    }
+
+   return this.http.post<any>(`${this.updateMany}`,payload)
   }
 }
