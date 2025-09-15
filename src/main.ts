@@ -6,6 +6,7 @@ import { PromptListComponent } from './components/prompt-list.component';
 import { SettingsComponent } from './components/settings.component';
 import { PromptService } from './services/prompt.service';
 import { Prompt, PromptFormData } from './models/prompt.interface';
+import { appConfig } from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -165,4 +166,4 @@ export class App implements OnInit {
   }
 }
 
-bootstrapApplication(App);
+bootstrapApplication(App,appConfig);

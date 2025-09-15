@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
 import { Prompt, PromptFormData, GlobalSettings } from '../models/prompt.interface';
+import { AppConfigService } from './appConfig/app-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +22,15 @@ export class PromptService {
       distinctUntilChanged()      // emit only if value changed
     );
   private settingsSubject = new BehaviorSubject<GlobalSettings>(this.globalSettings);
+  liquidUrl ="";
 
-  constructor() {
+  constructor(public config: AppConfigService) {
     // Initialize with sample data
     this.loadSampleData();
+     this.liquidUrl = this.config.getAPIURL(true, 'apiUrl', 'workFlowQueryUrl');
+     debugger
+     console.log(this.liquidUrl);
+     
   }
 
   updateSearch(term: string) {
