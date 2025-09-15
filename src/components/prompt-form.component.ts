@@ -48,6 +48,10 @@ export class PromptFormComponent implements OnInit {
     return !!this.editPrompt;
   }
 
+get instructions(): FormArray {
+  return this.promptForm.get('instructions') as FormArray;
+}
+
   constructor(
     private fb: FormBuilder,
     private promptService: PromptService
@@ -58,9 +62,32 @@ export class PromptFormComponent implements OnInit {
     this.initializeForm();
   }
 
+  addInstructionItem(){
+    return this.fb.group({
+      paragraph: this.fb.control('', Validators.required),
+      guide: this.fb.control('', Validators.required),
+      reasonForChange: this.fb.control('', Validators.required)
+    })
+  }
+
   private initializeForm(): void {
     this.promptForm = this.fb.group({
       versionNumber: [this.editPrompt?.versionNumber || '', Validators.required],
+      processStage: [this.editPrompt?.processStage || '', Validators.required],
+      jsonSchema:this.fb.control('', Validators.required),
+      prompt: this.fb.control('', Validators.required),
+      temperature: this.fb.control('', Validators.required),
+      topK: this.fb.control('', Validators.required),
+      topP: this.fb.control('', Validators.required),
+      maxOutputTokens: this.fb.control('', Validators.required),
+      thinkingBudget: this.fb.control('', Validators.required),
+      parentVersion: this.fb.control(''),
+      instructions: this.fb.array([this.addInstructionItem()])
+    })
+  }
+  private _initializeForm(): void {
+    this.promptForm = this.fb.group({
+      versionNumber: [this.editPrompt?.versionNumber || '1.0', Validators.required],
       processStage: [this.editPrompt?.processStage || '', Validators.required],
       instructionParagraphs: this.fb.array(
         this.editPrompt?.instructionParagraphs?.length 
@@ -90,9 +117,19 @@ export class PromptFormComponent implements OnInit {
     this.instructionParagraphsArray.push(this.fb.control('', Validators.required));
   }
 
+    addInstructionToArray(): void {
+    this.instructions.push(this.addInstructionItem());
+  }
+
   removeInstructionParagraph(index: number): void {
     if (this.instructionParagraphsArray.length > 1) {
       this.instructionParagraphsArray.removeAt(index);
+    }
+  }
+
+    removeInstruction(index: number): void {
+    if (this.instructions.length > 1) {
+      this.instructions.removeAt(index);
     }
   }
 
@@ -120,6 +157,7 @@ export class PromptFormComponent implements OnInit {
     if (this.promptForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       
+    console.log(this.promptForm.value);
       // Simulate API call delay
       setTimeout(() => {
         const formValue = this.promptForm.value;
