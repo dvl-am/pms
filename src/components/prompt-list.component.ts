@@ -10,9 +10,13 @@ import { Prompt } from "../models/prompt.interface";
   styleUrls: ["./prompt-list.component.css"],
 })
 export class PromptListComponent {
+
   @Input() prompts: Prompt[] = [];
   @Output() editPrompt = new EventEmitter<Prompt>();
   @Output() deletePrompt = new EventEmitter<Prompt>();
+  show = false;
+  message: string="";
+  currentPrompt!: Prompt;
 
   trackByPromptId(index: number, prompt: Prompt): string {
     return prompt.id;
@@ -23,9 +27,11 @@ export class PromptListComponent {
   }
 
   onDelete(prompt: Prompt): void {
-    if (confirm(`Are you sure you want to delete the prompt "${prompt.processStage}"?`)) {
-      this.deletePrompt.emit(prompt);
-    }
+    this.show = true;
+     this.message = `Are you sure you want to delete the prompt "${prompt.processStage}"?`;
+    
+      this.currentPrompt = prompt;
+    
   }
 
   truncateText(text: string, maxLength: number): string {
@@ -49,4 +55,13 @@ export class PromptListComponent {
       return schema;
     }
   }
+  onConfirm(arg0: boolean) {
+    this.show = false;
+    if(arg0){
+        this.deletePrompt.emit(this.currentPrompt);
+
+    }
+
+    
+}
 }

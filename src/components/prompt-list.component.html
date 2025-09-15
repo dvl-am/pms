@@ -58,3 +58,14 @@
         </div>
       </div>
     </div>
+
+    <div class="overlay" *ngIf="show">
+  <div class="dialog">
+    <h2>Alert</h2>
+    <p>{{ message }}</p>
+    <div class="actions">
+      <button class="cancel" (click)="onConfirm(false)">Cancel</button>
+      <button class="confirm" (click)="onConfirm(true)">Confirm</button>
+    </div>
+  </div>
+</div>
