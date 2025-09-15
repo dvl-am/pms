@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Prompt } from '../models/prompt.interface';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Prompt } from "../models/prompt.interface";
 
 @Component({
-  selector: 'app-prompt-list',
+  selector: "app-prompt-list",
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -24,81 +24,51 @@ import { Prompt } from '../models/prompt.interface';
           <div class="card-header">
             <div class="version-badge">v{{ prompt.versionNumber }}</div>
             <div class="card-actions">
-              <button 
-                class="action-btn edit-btn" 
-                (click)="onEdit(prompt)"
-                title="Edit prompt">
-                ✏️
-              </button>
-              <button 
-                class="action-btn delete-btn" 
-                (click)="onDelete(prompt)"
-                title="Delete prompt">
-                🗑️
-              </button>
+              <button class="action-btn edit-btn" (click)="onEdit(prompt)" title="Edit prompt">✏️</button>
+              <button class="action-btn delete-btn" (click)="onDelete(prompt)" title="Delete prompt">🗑️</button>
             </div>
           </div>
 
           <div class="card-content">
             <h3 class="process-stage">{{ prompt.processStage }}</h3>
-            
             <div class="instruction-preview">
               <div class="instruction-paragraphs">
-                <p *ngFor="let paragraph of prompt.instructionParagraphs.slice(0, 2)" 
-                   class="instruction-text">
-                  {{ truncateText(paragraph, 100) }}
-                </p>
-                <p *ngIf="prompt.instructionParagraphs.length > 2" 
-                   class="more-indicator">
-                  +{{ prompt.instructionParagraphs.length - 2 }} more paragraph{{ prompt.instructionParagraphs.length - 2 === 1 ? '' : 's' }}
-                </p>
+                <p *ngFor="let paragraph of prompt.instructionParagraphs.slice(0, 1)" class="instruction-text">{{ truncateText(paragraph, 100) }}</p>
               </div>
             </div>
 
             <div class="instruction-guide">
               <h4 class="guide-label">Purpose</h4>
               <div class="guide-items">
-                <p *ngFor="let guide of prompt.instructionGuide.slice(0, 2)" 
-                   class="guide-text">
-                  {{ truncateText(guide, 80) }}
-                </p>
-                <p *ngIf="prompt.instructionGuide.length > 2" 
-                   class="more-indicator">
-                  +{{ prompt.instructionGuide.length - 2 }} more guide{{ prompt.instructionGuide.length - 2 === 1 ? '' : 's' }}
-                </p>
+                <p *ngFor="let guide of prompt.instructionGuide.slice(0, 1)" class="guide-text">{{ truncateText(guide, 80) }}</p>
               </div>
             </div>
 
             <div *ngIf="prompt.reasonForEdit && prompt.reasonForEdit.length > 0" class="edit-reason">
               <h4 class="reason-label">Last Edit</h4>
               <div class="reason-items">
-                <p *ngFor="let reason of prompt.reasonForEdit.slice(0, 2)" 
-                   class="reason-text">
-                  {{ reason }}
-                </p>
-                <p *ngIf="prompt.reasonForEdit.length > 2" 
-                   class="more-indicator">
-                  +{{ prompt.reasonForEdit.length - 2 }} more reason{{ prompt.reasonForEdit.length - 2 === 1 ? '' : 's' }}
-                </p>
+                <p *ngFor="let reason of prompt.reasonForEdit.slice(0, 1)" class="reason-text">{{ reason }}</p>
+                
               </div>
+            </div>
+            <div>
+               <p *ngIf="prompt.instructionParagraphs.length > 2" class="more-indicator">
+                  +{{ prompt.instructionParagraphs.length - 2 }} more paragraph{{ prompt.instructionParagraphs.length - 2 === 1 ? "" : "s" }}
+                </p>
             </div>
           </div>
 
           <div class="card-footer">
             <div class="timestamp-info">
-              <span class="timestamp">
-                Created: {{ formatDate(prompt.createdAt) }}
-              </span>
-              <span *ngIf="prompt.updatedAt && prompt.updatedAt !== prompt.createdAt" class="timestamp">
-                Updated: {{ formatDate(prompt.updatedAt) }}
-              </span>
+              <div class="timestamp">Created: {{ formatDate(prompt.createdAt) }}</div>
+              <div *ngIf="prompt.updatedAt && prompt.updatedAt !== prompt.createdAt" class="timestamp">Updated: {{ formatDate(prompt.updatedAt) }}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
   `,
-  styleUrls: ['./prompt-list.component.css']
+  styleUrls: ["./prompt-list.component.css"],
 })
 export class PromptListComponent {
   @Input() prompts: Prompt[] = [];
@@ -121,14 +91,14 @@ export class PromptListComponent {
 
   truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) return text;
-    return text.substr(0, maxLength) + '...';
+    return text.substr(0, maxLength) + "...";
   }
 
   formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   }
 
