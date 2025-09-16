@@ -8,6 +8,7 @@
     "demo": {
       "architect": {
         "build": {
+         
           "builder": "@angular/build:application",
           "configurations": {
             "development": {
@@ -26,6 +27,7 @@
             }
           },
           "options": {
+            "baseHref": "/pms/",
             "assets": [
                "src/assets"
             ],
