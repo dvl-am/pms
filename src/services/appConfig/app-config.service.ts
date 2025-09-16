@@ -30,7 +30,6 @@ export class AppConfigService {
     if (isPrefixURL) {
       return `${this.configObj[prefixURLKey]}${this.configObj[mainURL]}`;
     } else {
-      console.log('${this.configObj[mainURL]} : ', `${this.configObj[mainURL]}`)
       return `${this.configObj[mainURL]}`;
     }
   }

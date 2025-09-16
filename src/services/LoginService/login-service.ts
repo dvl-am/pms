@@ -36,7 +36,6 @@ export class LoginService {
     formData.append('password', obj.password);
     return this.http.post<AuthUser>(`${this.authURL}login`, formData).pipe(
       map((el) => {
-        console.log(el)
         let userToken = '';
         if (el.Value) {
           userToken = el.Value;

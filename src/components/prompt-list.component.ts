@@ -81,7 +81,6 @@ export class PromptListComponent implements OnInit{
   }
 
   getCurrentVersionItem(promptItem: any, version: string) {
-    console.log([promptItem.versions.find((v: any) => v.versionNumber === version)])
       return [promptItem.versions.find((v: any) => v.versionNumber === version)]
     
     }

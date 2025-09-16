@@ -45,7 +45,6 @@ export class LoaderInterceptorService implements HttpInterceptor {
     const headers = newRequest.headers.set('Authorization', authToken);
     newRequest = newRequest.clone({ headers });
     
-    console.log(headers);
     
     return next.handle(newRequest).pipe(
       finalize(() => {

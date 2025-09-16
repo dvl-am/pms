@@ -35,9 +35,6 @@ export class PromptService {
      this.updateMany = this.config.getAPIURL(true, 'apiUrl', 'workFlowUpdateMany');
 
      
-    //  debugger
-     console.log(this.liquidUrl);
-     
   }
 
   updateSearch(term: string) {
@@ -172,7 +169,6 @@ export class PromptService {
     
     this.prompts = [...data];
      this.search$.subscribe(term => {
-      console.log(term);      
       const filteredPrompt = this.prompts.filter(i =>
         i.processStage.toLowerCase().includes(term.toLowerCase())
       ); 

@@ -27,7 +27,6 @@ export class Home implements OnInit{
       this.prompts = prompts;
     });
     this.promptService.fetchUserDetails("amit.mishra@digivatelabs.com").subscribe(el=>{
-      console.log(el);
       
     })
   }

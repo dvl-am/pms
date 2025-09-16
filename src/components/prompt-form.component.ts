@@ -258,7 +258,7 @@ get instructions(): FormArray {
         "currentVersion": Number(this.editPrompt.currentVersion) +1
       }
       
-      console.log('Edited Prompt configuration:', submitObj);
+      
       this.promptService.updatePromptConfig(recordId, submitObj).subscribe({
         next: (response) => {
           console.log('Prompt configuration updated successfully:', response);
@@ -284,8 +284,6 @@ get instructions(): FormArray {
   }
 
   onVersionChange($event:any){
-    console.log($event.target.value);
-    console.log(this.editPrompt)
     if(!this.isEditMode) return;
     if(!this.editPrompt?.versions?.length) return;
     if(!Number($event.target.value)) return;

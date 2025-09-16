@@ -107,7 +107,6 @@ export class Login implements OnInit {
         .fetchUserDetails(this.userObj.additionalData?.emailId)
         .subscribe({
           next: (data) => {
-            console.log(data);
             if (data.length) {
               sessionStorage.setItem("userDetails", JSON.stringify(data[0]));
               if (sessionStorage.getItem("userDetails")) {

@@ -41,7 +41,6 @@ export class LoaderComponent implements OnInit {
         primaryButtonName: "",
         secondaryButtonName: "",
       };
-      console.log(alertData);
       
    
     }
