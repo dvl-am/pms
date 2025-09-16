@@ -72,7 +72,7 @@ get instructions(): FormArray {
     return this.fb.group({
       paragraph: this.fb.control(paragraph, Validators.required),
       guide: this.fb.control(guide, Validators.required),
-      reasonForChange: this.fb.control(reasonForChange)
+      reasonForChange: this.fb.control(reasonForChange , this.isEditMode ? Validators.required : null)
     })
   }
 

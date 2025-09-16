@@ -89,7 +89,7 @@
             id="temperature" 
             formControlName="temperature" 
             class="form-input"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="promptForm.get('temperature')?.invalid && promptForm.get('temperature')?.touched"
             placeholder=''/>
         </div>
 
@@ -100,7 +100,7 @@
             id="topK" 
             formControlName="topK" 
             class="form-input"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="promptForm.get('topK')?.invalid && promptForm.get('topK')?.touched"
             placeholder=''/>
         </div>
         </div>
@@ -113,7 +113,7 @@
             id="topP" 
             formControlName="topP" 
             class="form-input"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="promptForm.get('topP')?.invalid && promptForm.get('topP')?.touched"
             placeholder=''/>
         </div>
 
@@ -124,7 +124,7 @@
             id="maxOutputTokens" 
             formControlName="maxOutputTokens" 
             class="form-input"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="promptForm.get('maxOutputTokens')?.invalid && promptForm.get('maxOutputTokens')?.touched"
             placeholder=''/>
         </div>
         </div>
@@ -136,7 +136,7 @@
             id="thinkingBudget" 
             formControlName="thinkingBudget" 
             class="form-input"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="promptForm.get('thinkingBudget')?.invalid && promptForm.get('thinkingBudget')?.touched"
             placeholder=''/>
         </div>
 
@@ -158,7 +158,7 @@
             id="paragraph" 
             formControlName="paragraph" 
             class="form-textarea json-schema"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="paragraph.get('paragraph')?.invalid && paragraph.get('paragraph')?.touched"
             rows="8"
             placeholder=''></textarea>            
             </div>
@@ -171,7 +171,7 @@
             id="guide" 
             formControlName="guide" 
             class="form-textarea json-schema"
-            [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
+            [class.error]="paragraph.get('guide')?.invalid && paragraph.get('guide')?.touched"
             rows="8"
             placeholder=''></textarea>            
             </div>
@@ -187,7 +187,7 @@
                   type="text"
                   formControlName="reasonForChange"
                   class="form-input"
-                  
+                  [class.error]="paragraph.get('reasonForChange')?.invalid && paragraph.get('reasonForChange')?.touched"                  
                   [placeholder]="'Edit reason '" />
                </div>
                 }
