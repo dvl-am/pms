@@ -194,6 +194,12 @@
 }
 
 
+.logout-btn .icon {
+  font-size: 1.2rem;
+}
+
+
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

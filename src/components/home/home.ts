@@ -5,6 +5,7 @@ import { PromptFormComponent } from "../prompt-form.component";
 import { PromptListComponent } from "../prompt-list.component";
 import { SettingsComponent } from "../settings.component";
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,7 @@ export class Home implements OnInit{
   showToast = false;
   toastMessage = '';
 
-  constructor(private promptService: PromptService) {}
+  constructor(private promptService: PromptService, private router: Router) {}
 
   ngOnInit(): void {
     this.promptService.getPrompts().subscribe(prompts => {
@@ -29,6 +30,10 @@ export class Home implements OnInit{
     this.promptService.fetchUserDetails("amit.mishra@digivatelabs.com").subscribe(el=>{
       
     })
+  }
+   logout() {
+    localStorage.removeItem('token'); // clear auth token
+    this.router.navigate(['/login']); // redirect to login
   }
 
   toggleForm(): void {
