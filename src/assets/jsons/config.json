@@ -1,6 +1,7 @@
 {
   "env": "DEV",
   "apiUrl": "https://dev.digivatelabs.com:10443/",
+  "authenticationUrl": "https://dev.digivatelabs.com:10443/auth/",
   "workFlowQueryUrl": "api/workflow/query",
   "workFlowAddNewUrl":"api/workflow/insertone",
   "workFlowUpdateMany":"api/workflow/updatemany"

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LoginService } from '../../services/LoginService/login-service';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +21,12 @@ export class Login implements OnInit {
   isSubmitting = false;
   showErrorToast = false;
   errorMessage = '';
+ userData = { email: "", password: "" };
+   userObj: any;
+     loginError = "";
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder,  private router: Router,
+    private _loginService: LoginService,) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -28,9 +34,9 @@ export class Login implements OnInit {
 
   private initializeForm(): void {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false]
+     
     });
   }
 
@@ -38,35 +44,7 @@ export class Login implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
-      
-      // Simulate API call
-      setTimeout(() => {
-        const formValue = this.loginForm.value;
-        
-        // Mock authentication logic
-        if (formValue.email === 'admin@example.com' && formValue.password === 'password123') {
-          // Successful login
-          const userData = {
-            email: formValue.email,
-            name: 'Admin User',
-            rememberMe: formValue.rememberMe
-          };
-          
-          this.loginSuccess.emit(userData);
-          this.isSubmitting = false;
-        } else {
-          // Failed login
-          this.showErrorMessage('Invalid email or password. Please try again.');
-          this.isSubmitting = false;
-        }
-      }, 1500);
-    } else {
-      this.markFormGroupTouched();
-    }
-  }
+
 
   onForgotPassword(event: Event): void {
     event.preventDefault();
@@ -93,4 +71,57 @@ export class Login implements OnInit {
       this.loginForm.get(key)?.markAsTouched();
     });
   }
+    onSubmit(): void {
+    this.loginForm.markAllAsTouched();
+    this.userData = {
+      email: this.loginForm.controls["email"].value
+        ? this.loginForm.controls["email"].value
+        : "",
+      password: this.loginForm.controls["password"].value
+        ? this.loginForm.controls["password"].value
+        : "",
+    };
+    this.login();
+  }
+    login() {
+    this._loginService.authenticateUser(this.userData).subscribe({
+      next: (user) => {
+        this.userObj = user;
+        if (this.userObj && this.userObj.Error == null) {
+          this.loginSuccessful();
+          // this.router.navigate(['/home'])
+        } else {
+          this.showErrorMessage(this.userObj.Error);
+          this.router.navigate(["/login"]);
+        }
+      },
+      error: (err) => {
+        console.error("Error", err);
+        this.showErrorMessage(this.loginError);
+      },
+    });
+  }
+    loginSuccessful() {
+    if (this.userData.email == this.userObj?.additionalData?.loginId) {
+      this._loginService
+        .fetchUserDetails(this.userObj.additionalData?.emailId)
+        .subscribe({
+          next: (data) => {
+            console.log(data);
+            if (data.length) {
+              sessionStorage.setItem("userDetails", JSON.stringify(data[0]));
+              if (sessionStorage.getItem("userDetails")) {
+                this.router.navigate(['/home'])
+                // this.navigateToDefaultPage(data[0]?.role, data[0]?.loginId);
+                // this.router.navigate(['/home/tenderList'])
+              }
+              this._loginService.loggedInUserDetails.next(Object(data[0]));
+            }
+          },
+        });
+    } else {
+      this.showErrorMessage(this.loginError);
+    }
+  }
+  
 }

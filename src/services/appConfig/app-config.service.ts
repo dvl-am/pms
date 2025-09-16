@@ -9,6 +9,7 @@ export class AppConfigService {
   env = "";
   configObj: any;
   liquidUrl = "";
+  authenticationUrl=""
 
 
   constructor(private readonly httpClient: HttpClient) { }
