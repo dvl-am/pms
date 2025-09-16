@@ -1,0 +1,75 @@
+    <div class="app-container">
+      <header class="app-header">
+        <div class="header-content">
+          <div><div class="app-title">
+            Prompt Management System
+</div></div>
+          <div><p class="app-subtitle">Manage your AI prompts intelligently</p> </div>
+          <!-- <div class="header-actions">
+            <button 
+              class="btn btn-outline"
+              (click)="toggleSettings()"
+              [class.active]="showSettings">
+              <span class="btn-icon">⚙️</span>
+              Settings
+            </button>
+          </div> -->
+        </div>
+      </header>
+
+      <main class="app-main">
+        <div class="main-content">
+          <!-- Action Bar -->
+          <div class="action-bar" *ngIf="!showSettings">
+      
+            <input  *ngIf="!showForm"  type="text" class="form-input m-r"  placeholder="Search..."
+      (input)="onSearch($event)">
+            <button 
+              *ngIf="!showForm" 
+              class="btn btn-primary create-btn"
+              (click)="toggleForm()">
+              <span class="btn-icon">+</span>
+              Create New Prompt
+            </button>
+            <button 
+              *ngIf="showForm" 
+              class="btn btn-secondary"
+              (click)="cancelForm()">
+              <span class="btn-icon">←</span>
+              Back to List
+            </button>
+          </div>
+
+          <!-- Settings Section -->
+          <div class="settings-section" *ngIf="showSettings">
+            <app-settings></app-settings>
+          </div>
+
+          <!-- Form Section -->
+          <div class="form-section" *ngIf="showForm && !showSettings">
+            <app-prompt-form
+              [editPrompt]="editingPrompt"
+              (formSubmit)="onFormSubmit($event)"
+              (formCancel)="cancelForm()">
+            </app-prompt-form>
+          </div>
+
+          <!-- List Section -->
+          <div class="list-section" *ngIf="!showForm && !showSettings">
+            <app-prompt-list
+              [prompts]="prompts"
+              (editPrompt)="onEditPrompt($event)"
+              (deletePrompt)="onDeletePrompt($event)">
+            </app-prompt-list>
+          </div>
+        </div>
+      </main>
+
+      <!-- Success Toast -->
+      <div class="toast" [class.show]="showToast">
+        <div class="toast-content">
+          <span class="toast-icon">✅</span>
+          <span class="toast-message">{{ toastMessage }}</span>
+        </div>
+      </div>
+    </div>
