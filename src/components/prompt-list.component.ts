@@ -18,7 +18,7 @@ export class PromptListComponent implements OnInit{
   @Output() deletePrompt = new EventEmitter<Prompt>();
   show = false;
   message: string="";
-  currentPrompt!: Prompt;
+  currentPrompt!: any;
 
   constructor(private promptService:PromptService){
 
@@ -46,7 +46,6 @@ export class PromptListComponent implements OnInit{
      this.message = `Are you sure you want to delete the prompt "${prompt.processStage}"?`;
     
       this.currentPrompt = prompt;
-      //this.prompts = this.prompts.filter(p => p?._id?.$oid !== prompt?._id?.$oid);
     
   }
 
@@ -75,8 +74,9 @@ export class PromptListComponent implements OnInit{
   onConfirm(arg: boolean) {
     this.show = false;
     if(arg){
+      this.prompts = this.prompts.filter(p => p?._id?.$oid !== this.currentPrompt?._id?.$oid);
+      this.promptService.loadSampleData(this.prompts)
         this.deletePrompt.emit(this.currentPrompt);
-
     }
   }
 
