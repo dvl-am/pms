@@ -21,6 +21,15 @@ export class LoginService {
        this.liquidURL = this.config.getAPIURL(true, 'apiUrl', 'workFlowQueryUrl');
        this.authURL = config.authenticationUrl;
    }
+     isLoggedIn() {
+    const loggedInUser = sessionStorage.getItem('user');
+    return loggedInUser ? true : false;
+  }
+    getUserDetails() {
+    const user = sessionStorage.getItem('user');
+    return user ? JSON.parse(user) : '';
+  }
+
    authenticateUser(obj: UserCredential): Observable<AuthUser> {
     const formData = new FormData();
     formData.append('userid', obj.email);
