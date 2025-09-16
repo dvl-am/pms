@@ -83,12 +83,11 @@ get instructions(): FormArray {
     ))
   }
 
-  private initializeForm(): void {
-    debugger
-    const currentIndex = this.editPrompt?.currentVersion
+  private initializeForm(version:number = -1): void {
+    const currentIndex = version!=-1 ? version : this.editPrompt?.currentVersion
     const currentVersionItem = this.editPrompt?.versions?.find((item:any)=> item.versionNumber ===currentIndex) 
     this.promptForm = this.fb.group({
-      versionNumber: this.fb.control(this.editPrompt?.currentVersion || 1, Validators.required),
+      versionNumber: this.fb.control(currentIndex || 1, Validators.required),
       processStage: this.fb.control(this.editPrompt?.processStage || '', Validators.required),
       jsonSchema:this.fb.control(currentVersionItem?.jsonSchema || '', Validators.required),
       prompt: this.fb.control(currentVersionItem?.prompt || '', Validators.required),
@@ -282,5 +281,18 @@ get instructions(): FormArray {
         control?.markAsTouched();
       }
     });
+  }
+
+  onVersionChange($event:any){
+    console.log($event.target.value);
+    console.log(this.editPrompt)
+    if(!this.isEditMode) return;
+    if(!this.editPrompt?.versions?.length) return;
+    if(!Number($event.target.value)) return;
+
+    const selectedVersion = this.editPrompt?.versions?.find((item:any)=> item.versionNumber === Number($event.target.value))
+    if(!selectedVersion) return;
+
+    this.initializeForm(Number($event.target.value));
   }
 }

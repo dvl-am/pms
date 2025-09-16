@@ -13,7 +13,8 @@
               id="versionNumber" 
               formControlName="versionNumber" 
               class="form-select"
-              [class.error]="promptForm.get('versionNumber')?.invalid && promptForm.get('versionNumber')?.touched">
+              [class.error]="promptForm.get('versionNumber')?.invalid && promptForm.get('versionNumber')?.touched" 
+              (change)="onVersionChange($event)">
               <option value="">Select version</option>
               <option *ngFor="let version of versionOptions" [value]="version" >
                 {{ version }}
