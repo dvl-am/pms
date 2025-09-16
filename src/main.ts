@@ -39,7 +39,7 @@ import { LoaderComponent } from "./components/loader/loader.component";
           <!-- Action Bar -->
           <div class="action-bar" *ngIf="!showSettings">
       
-            <input type="text" class="form-input m-r"  placeholder="Search..."
+            <input  *ngIf="!showForm"  type="text" class="form-input m-r"  placeholder="Search..."
       (input)="onSearch($event)">
             <button 
               *ngIf="!showForm" 
