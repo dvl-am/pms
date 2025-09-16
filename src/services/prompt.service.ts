@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PromptService {
   private prompts: any[] = [];
-  private promptsSubject = new BehaviorSubject<Prompt[]>([]);
+  private promptsSubject = new BehaviorSubject<any[]>([]);
   private globalSettings: GlobalSettings = {
     topK: 40,
     temperature: 0.7,
@@ -86,7 +86,7 @@ export class PromptService {
 
   deletePrompt(id: string): boolean {
     const initialLength = this.prompts.length;
-    this.prompts = this.prompts.filter(p => p.id !== id);
+    this.prompts = this.prompts.filter(p => p?._id?.$oid !== id);
     
     if (this.prompts.length < initialLength) {
       this.promptsSubject.next([...this.prompts]);

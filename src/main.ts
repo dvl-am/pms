@@ -152,7 +152,7 @@ export class App implements OnInit {
   }
 
   onDeletePrompt(prompt: any): void {
-    //const success = this.promptService.deletePrompt(prompt.id);
+    const success = this.promptService.deletePrompt(prompt.id);
     this.promptService.markPromptItemAsInactive(prompt?._id?.$oid).subscribe(res=>{
       if (res) {
       this.showToastMessage('Prompt deleted successfully!');

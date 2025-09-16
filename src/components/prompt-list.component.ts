@@ -41,11 +41,12 @@ export class PromptListComponent implements OnInit{
     this.editPrompt.emit(prompt);
   }
 
-  onDelete(prompt: Prompt): void {
+  onDelete(prompt: any): void {
     this.show = true;
      this.message = `Are you sure you want to delete the prompt "${prompt.processStage}"?`;
     
       this.currentPrompt = prompt;
+      //this.prompts = this.prompts.filter(p => p?._id?.$oid !== prompt?._id?.$oid);
     
   }
 
