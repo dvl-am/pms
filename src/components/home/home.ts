@@ -32,7 +32,9 @@ export class Home implements OnInit{
     })
   }
    logout() {
-    localStorage.removeItem('token'); // clear auth token
+  
+    sessionStorage.clear()
+    localStorage.clear();
     this.router.navigate(['/login']); // redirect to login
   }
 
