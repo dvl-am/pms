@@ -29,7 +29,7 @@ export class PromptFormComponent implements OnInit {
   @Output() formCancel = new EventEmitter<void>();
 
   promptForm!: FormGroup;
-  versionOptions: string[] = [];
+  versionOptions: number[] = [];
   isSubmitting = false;
 
   get instructionParagraphsArray(): FormArray {
@@ -59,7 +59,7 @@ get instructions(): FormArray {
 
   ngOnInit(): void {
     
-    this.versionOptions=['1'] //= this.promptService.getVersionOptions();
+    this.versionOptions=[1] //= this.promptService.getVersionOptions();
     this.initializeForm();
   }
 
@@ -67,7 +67,7 @@ get instructions(): FormArray {
     return this.fb.group({
       paragraph: this.fb.control(paragraph, Validators.required),
       guide: this.fb.control(guide, Validators.required),
-      reasonForChange: this.fb.control(reasonForChange, Validators.required)
+      reasonForChange: this.fb.control(reasonForChange)
     })
   }
 
@@ -79,12 +79,10 @@ get instructions(): FormArray {
   }
 
   private initializeForm(): void {
-    debugger
-    console.log(this.editPrompt)
-    const currentIndex = this.editPrompt.currentVersion
-    const currentVersionItem = this.editPrompt.versions.find((item:any)=> item.versionNumber ===currentIndex) 
+    const currentIndex = this.editPrompt?.currentVersion
+    const currentVersionItem = this.editPrompt?.versions?.find((item:any)=> item.versionNumber ===currentIndex) 
     this.promptForm = this.fb.group({
-      versionNumber: this.fb.control(this.editPrompt?.versionNumber || '1', Validators.required),
+      versionNumber: this.fb.control(this.editPrompt?.versionNumber || 1, Validators.required),
       processStage: this.fb.control(this.editPrompt?.processStage || '', Validators.required),
       jsonSchema:this.fb.control(currentVersionItem?.jsonSchema || '', Validators.required),
       prompt: this.fb.control(currentVersionItem?.prompt || '', Validators.required),
@@ -169,88 +167,96 @@ get instructions(): FormArray {
   onSubmit(): void {
     if (this.promptForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      
-      if(this.isEditMode){
-        console.log(this.promptForm.value);
-        const recordId = this.editPrompt?._id?.$oid
-        const versionToChange = this.promptForm.value.versionNumber
-        const indexOfVersionItemInOrg = this.editPrompt.versions.findIndex((item:any)=> item.versionNumber ===versionToChange)
-        if(indexOfVersionItemInOrg > -1){
-          let versionsCopy = [...this.editPrompt.versions]
-          versionsCopy[indexOfVersionItemInOrg] =  {
-      "versionNumber":  this.promptForm.value.versionNumber,
-      "jsonSchema": this.promptForm.value.jsonSchema,
-      "prompt": this.promptForm.value.prompt,
-      "temperature": this.promptForm.value.temperature,
-      "topP": this.promptForm.value.topP,
-      "topK": this.promptForm.value.topK,
-      "maxOutputTokens": this.promptForm.value.maxOutputTokens,
-      "thinkingBudget": this.promptForm.value.thinkingBudget,
-      "parentVersion": "",
-      "instructions": [
-        ...this.promptForm.value.instructions
-      ]
-    }
-          const submitObj = {
-            "processStage": this.promptForm.value.processStage,
-            "versions": [
-              ...versionsCopy
-            ],
-            "currentVersion": this.promptForm.value.versionNumber
-          }
-          this.promptService.updatePromptConfig(recordId, submitObj).subscribe({
-            next: (response) => {
-              console.log('Prompt configuration updated successfully:', response);
-            }})
-          }
 
+      if (this.isEditMode) {
+        this.saveEdittedRecord();
+      } else {
+        this.saveNewRecord();
+        // Simulate API call delay
+        //   setTimeout(() => {
+        //     const formValue = this.promptForm.value;
+        //     // Filter out empty strings from arrays
+        //     const cleanedValue = {
+        //       ...formValue,
+        //       instructionParagraphs: formValue.instructionParagraphs.filter((p: string) => p.trim()),
+        //       instructionGuide: formValue.instructionGuide.filter((g: string) => g.trim()),
+        //       reasonForEdit: formValue.reasonForEdit.filter((r: string) => r.trim())
+        //     };
+        //     this.formSubmit.emit(cleanedValue);
+        //     this.isSubmitting = false;
+        //   }, 500);
+        // } else {
+        //   this.markFormGroupTouched();
+        // }
 
-      }else{
-    console.log(this.promptForm.value);
-      // Simulate API call delay
-    //   setTimeout(() => {
-    //     const formValue = this.promptForm.value;
-    //     // Filter out empty strings from arrays
-    //     const cleanedValue = {
-    //       ...formValue,
-    //       instructionParagraphs: formValue.instructionParagraphs.filter((p: string) => p.trim()),
-    //       instructionGuide: formValue.instructionGuide.filter((g: string) => g.trim()),
-    //       reasonForEdit: formValue.reasonForEdit.filter((r: string) => r.trim())
-    //     };
-    //     this.formSubmit.emit(cleanedValue);
-    //     this.isSubmitting = false;
-    //   }, 500);
-    // } else {
-    //   this.markFormGroupTouched();
-    // }
-
-    const submitObj = {
-  "processStage": this.promptForm.value.processStage,
-  "versions": [
-    {
-      "versionNumber":  this.promptForm.value.versionNumber,
-      "jsonSchema": this.promptForm.value.jsonSchema,
-      "prompt": this.promptForm.value.prompt,
-      "temperature": this.promptForm.value.temperature,
-      "topP": this.promptForm.value.topP,
-      "topK": this.promptForm.value.topK,
-      "maxOutputTokens": this.promptForm.value.maxOutputTokens,
-      "thinkingBudget": this.promptForm.value.thinkingBudget,
-      "parentVersion": "",
-      "instructions": [
-        ...this.promptForm.value.instructions
-      ]
-    }
-  ],
-  "currentVersion": this.promptForm.value.versionNumber
-}
-  this.promptService.submitNewPromptConfig(submitObj).subscribe({
-    next: (response) => {
-      console.log('Prompt configuration submitted successfully:', response);
-    }})
-    }
       }
+    }
+}
 
+  saveNewRecord() {
+    const submitObj = {
+      "processStage": this.promptForm.value.processStage,
+      "versions": [
+        {
+          "versionNumber": this.promptForm.value.versionNumber,
+          "jsonSchema": this.promptForm.value.jsonSchema,
+          "prompt": this.promptForm.value.prompt,
+          "temperature": this.promptForm.value.temperature,
+          "topP": this.promptForm.value.topP,
+          "topK": this.promptForm.value.topK,
+          "maxOutputTokens": this.promptForm.value.maxOutputTokens,
+          "thinkingBudget": this.promptForm.value.thinkingBudget,
+          "parentVersion": "",
+          "instructions": [
+            ...this.promptForm.value.instructions
+          ],
+
+        },
+
+      ],
+      "currentVersion": this.promptForm.value.versionNumber,
+      "isActive": "A"
+    }
+    this.promptService.submitNewPromptConfig(submitObj).subscribe({
+      next: (response) => {
+        console.log('Prompt configuration submitted successfully:', response);
+      }
+    })
+  }
+
+  saveEdittedRecord() {
+    const recordId = this.editPrompt?._id?.$oid
+    const versionToChange = this.promptForm.value.versionNumber
+    const indexOfVersionItemInOrg = this.editPrompt.versions.findIndex((item: any) => item.versionNumber === versionToChange)
+    if (indexOfVersionItemInOrg > -1) {
+      let versionsCopy = [...this.editPrompt.versions]
+      versionsCopy[indexOfVersionItemInOrg] = {
+        "versionNumber": this.promptForm.value.versionNumber,
+        "jsonSchema": this.promptForm.value.jsonSchema,
+        "prompt": this.promptForm.value.prompt,
+        "temperature": this.promptForm.value.temperature,
+        "topP": this.promptForm.value.topP,
+        "topK": this.promptForm.value.topK,
+        "maxOutputTokens": this.promptForm.value.maxOutputTokens,
+        "thinkingBudget": this.promptForm.value.thinkingBudget,
+        "parentVersion": "",
+        "instructions": [
+          ...this.promptForm.value.instructions
+        ]
+      }
+      const submitObj = {
+        "processStage": this.promptForm.value.processStage,
+        "versions": [
+          ...versionsCopy
+        ],
+        "currentVersion": this.promptForm.value.versionNumber
+      }
+      this.promptService.updatePromptConfig(recordId, submitObj).subscribe({
+        next: (response) => {
+          console.log('Prompt configuration updated successfully:', response);
+        }
+      })
+    }
   }
 
 

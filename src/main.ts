@@ -22,15 +22,15 @@ import { LoaderComponent } from "./components/loader/loader.component";
             Prompt Management System
 </div></div>
           <div><p class="app-subtitle">Manage your AI prompts intelligently</p> </div>
-          <div class="header-actions">
-            <!-- <button 
+          <!-- <div class="header-actions">
+            <button 
               class="btn btn-outline"
               (click)="toggleSettings()"
               [class.active]="showSettings">
               <span class="btn-icon">⚙️</span>
               Settings
-            </button> -->
-          </div>
+            </button>
+          </div> -->
         </div>
       </header>
 
@@ -152,7 +152,7 @@ export class App implements OnInit {
   }
 
   onDeletePrompt(prompt: any): void {
-    //const success = this.promptService.deletePrompt(prompt.id);
+    const success = this.promptService.deletePrompt(prompt.id);
     this.promptService.markPromptItemAsInactive(prompt?._id?.$oid).subscribe(res=>{
       if (res) {
       this.showToastMessage('Prompt deleted successfully!');
