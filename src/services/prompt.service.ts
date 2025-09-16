@@ -97,8 +97,12 @@ export class PromptService {
 
 
 
-  getVersionOptions(): string[] {
-    return ['1.0', '1.1', '1.2', '2.0', '2.1', '2.2', '3.0', '3.1', '3.2', '4.0'];
+  getVersionOptions(versionArray:any[]): number[] {
+    
+    return versionArray?.map((item:any)=>{
+      return Number(item.versionNumber)
+    })
+
   }
 
   private generateId(): string {

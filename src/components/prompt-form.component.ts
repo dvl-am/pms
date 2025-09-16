@@ -59,7 +59,12 @@ get instructions(): FormArray {
 
   ngOnInit(): void {
     
-    this.versionOptions=[1] //= this.promptService.getVersionOptions();
+    if(this.isEditMode){
+      this.versionOptions= this.promptService.getVersionOptions(this.editPrompt?.versions);
+    }else{
+      this.versionOptions=[1] 
+    }
+    
     this.initializeForm();
   }
 
@@ -79,10 +84,11 @@ get instructions(): FormArray {
   }
 
   private initializeForm(): void {
+    debugger
     const currentIndex = this.editPrompt?.currentVersion
     const currentVersionItem = this.editPrompt?.versions?.find((item:any)=> item.versionNumber ===currentIndex) 
     this.promptForm = this.fb.group({
-      versionNumber: this.fb.control(this.editPrompt?.versionNumber || 1, Validators.required),
+      versionNumber: this.fb.control(this.editPrompt?.currentVersion || 1, Validators.required),
       processStage: this.fb.control(this.editPrompt?.processStage || '', Validators.required),
       jsonSchema:this.fb.control(currentVersionItem?.jsonSchema || '', Validators.required),
       prompt: this.fb.control(currentVersionItem?.prompt || '', Validators.required),
@@ -226,12 +232,12 @@ get instructions(): FormArray {
 
   saveEdittedRecord() {
     const recordId = this.editPrompt?._id?.$oid
-    const versionToChange = this.promptForm.value.versionNumber
-    const indexOfVersionItemInOrg = this.editPrompt.versions.findIndex((item: any) => item.versionNumber === versionToChange)
-    if (indexOfVersionItemInOrg > -1) {
+    //const versionToChange = this.promptForm.value.versionNumber
+    //const indexOfVersionItemInOrg = this.editPrompt.versions.findIndex((item: any) => item.versionNumber === versionToChange)
+    //if (indexOfVersionItemInOrg > -1) {
       let versionsCopy = [...this.editPrompt.versions]
-      versionsCopy[indexOfVersionItemInOrg] = {
-        "versionNumber": this.promptForm.value.versionNumber,
+      const versionObj = {
+        "versionNumber": Number(this.editPrompt.currentVersion) +1,
         "jsonSchema": this.promptForm.value.jsonSchema,
         "prompt": this.promptForm.value.prompt,
         "temperature": this.promptForm.value.temperature,
@@ -244,19 +250,22 @@ get instructions(): FormArray {
           ...this.promptForm.value.instructions
         ]
       }
+      versionsCopy.push(versionObj)
       const submitObj = {
         "processStage": this.promptForm.value.processStage,
         "versions": [
           ...versionsCopy
         ],
-        "currentVersion": this.promptForm.value.versionNumber
+        "currentVersion": Number(this.editPrompt.currentVersion) +1
       }
+      
+      console.log('Edited Prompt configuration:', submitObj);
       this.promptService.updatePromptConfig(recordId, submitObj).subscribe({
         next: (response) => {
           console.log('Prompt configuration updated successfully:', response);
         }
       })
-    }
+    
   }
 
 
