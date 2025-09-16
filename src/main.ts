@@ -8,19 +8,37 @@ import { PromptService } from './services/prompt.service';
 import { Prompt, PromptFormData } from './models/prompt.interface';
 import { appConfig } from './app.config';
 import { LoaderComponent } from "./components/loader/loader.component";
+import { Login } from './components/login/login';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, PromptFormComponent, PromptListComponent, SettingsComponent, LoaderComponent],
+  imports: [CommonModule, PromptFormComponent, PromptListComponent, SettingsComponent, LoaderComponent, Login],
   template: `
   <app-loader></app-loader>
-    <div class="app-container">
+    <!-- Login Page -->
+    <app-login 
+      *ngIf="showLogin"
+      (loginSuccess)="onLoginSuccess($event)"
+      (navigateToSignup)="onNavigateToSignup()"
+      (forgotPassword)="onForgotPassword($event)">
+    </app-login>
+
+    <!-- Main Application -->
+    <div class="app-container" *ngIf="!showLogin">
       <header class="app-header">
         <div class="header-content">
           <div><div class="app-title">
             Prompt Management System
 </div></div>
+          <div class="header-actions">
+            <button 
+              class="btn btn-outline"
+              (click)="onLogout()">
+              <span class="btn-icon">🚪</span>
+              Logout
+            </button>
+          </div>
           <div><p class="app-subtitle">Manage your AI prompts intelligently</p> </div>
           <!-- <div class="header-actions">
             <button 
@@ -96,6 +114,7 @@ import { LoaderComponent } from "./components/loader/loader.component";
 export class App implements OnInit {
   prompts: Prompt[] = [];
   showForm = false;
+  showLogin = true;
   showSettings = false;
   editingPrompt: Prompt | null = null;
   showToast = false;
@@ -107,10 +126,12 @@ export class App implements OnInit {
     this.promptService.getPrompts().subscribe(prompts => {
       this.prompts = prompts;
     });
-    this.promptService.fetchUserDetails("amit.mishra@digivatelabs.com").subscribe(el=>{
-      console.log(el);
-      
-    })
+    
+    // Check if user is already logged in
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      this.showLogin = false;
+    }
   }
 
   toggleForm(): void {
@@ -161,6 +182,41 @@ export class App implements OnInit {
     
   }
 
+  onLoginSuccess(userData: any): void {
+    // Store user data
+    if (userData.rememberMe) {
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+    } else {
+      sessionStorage.setItem('currentUser', JSON.stringify(userData));
+    }
+    
+    this.showLogin = false;
+    this.showToastMessage(`Welcome back, ${userData.name}!`);
+    
+    // Initialize user-specific data
+    this.promptService.fetchUserDetails(userData.email).subscribe(el => {
+      console.log('User details:', el);
+    });
+  }
+
+  onNavigateToSignup(): void {
+    this.showToastMessage('Signup functionality would be implemented here.');
+  }
+
+  onForgotPassword(email: string): void {
+    this.showToastMessage(`Password reset instructions would be sent to: ${email || 'your email'}`);
+  }
+
+  onLogout(): void {
+    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
+    this.showLogin = true;
+    this.showForm = false;
+    this.showSettings = false;
+    this.editingPrompt = null;
+    this.showToastMessage('You have been logged out successfully.');
+  }
+
   private showToastMessage(message: string): void {
     this.toastMessage = message;
     this.showToast = true;
@@ -169,6 +225,7 @@ export class App implements OnInit {
       this.showToast = false;
     }, 3000);
   }
+
     onSearch(event: any) {
     const value = event.target.value;
     this.promptService.updateSearch(value);
