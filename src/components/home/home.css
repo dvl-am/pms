@@ -146,7 +146,8 @@
   transform: translateX(100%);
   transition: all 0.3s ease;
   z-index: 1000;
-  /* height: 60px; */
+  height: 70px;
+  width: fit-content;
 }
 
 .toast.show {
