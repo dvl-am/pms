@@ -18,8 +18,8 @@
           placeholder="Enter your user name">
         <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" 
              class="error-message">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
-          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">User name  is required</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid user name</span>
         </div>
       </div>
 
