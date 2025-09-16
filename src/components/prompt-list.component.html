@@ -19,35 +19,37 @@
               <button class="action-btn delete-btn" (click)="onDelete(prompt)" title="Delete prompt">🗑️</button>
             </div>
           </div>
-
+          @for(versionItem of getCurrentVersionItem(prompt,prompt.currentVersion); track $index){
           <div class="card-content">
             <h3 class="process-stage">{{ prompt.processStage }}</h3>
             <div class="instruction-preview">
               <div class="instruction-paragraphs">
-                <p *ngFor="let versionItem of getCurrentVersionItem(prompt,prompt.currentVersion)" class="instruction-text">{{ truncateText(versionItem.instructions[0].paragraph, 100) }}</p>
+                <p  class="instruction-text">{{ truncateText(versionItem.instructions[0].paragraph, 100) }}</p>
               </div>
             </div>
 
             <div class="instruction-guide">
               <h4 class="guide-label">Purpose</h4>
               <div class="guide-items">
-                <p *ngFor="let versionItem of getCurrentVersionItem(prompt,prompt.currentVersion)" class="guide-text">{{ truncateText(versionItem.instructions[0].guide, 80) }}</p>
+                <p class="guide-text">{{ truncateText(versionItem.instructions[0].guide, 80) }}</p>
               </div>
             </div>
 
-            <div *ngIf="prompt.reasonForEdit && prompt.reasonForEdit.length > 0" class="edit-reason">
+            <!-- <div *ngIf="prompt.reasonForEdit && prompt.reasonForEdit.length > 0" class="edit-reason">
               <h4 class="reason-label">Last Edit</h4>
               <div class="reason-items">
-                <p *ngFor="let versionItem of getCurrentVersionItem(prompt,prompt.currentVersion)" class="reason-text">{{ versionItem.instructions[0].reasonForChange }}</p>
+                <p class="reason-text">{{ versionItem.instructions[0].reasonForChange }}</p>
                 
               </div>
-            </div>
+            </div> -->
             <div>
-               <p *ngIf="prompt.versions.length > 2" class="more-indicator">
-                  +{{ prompt.versions.length - 2 }} more paragraph{{ prompt.versions.length - 2 === 1 ? "" : "s" }}
+               <p *ngIf="versionItem.instructions?.length > 1" class="more-indicator">
+                  +{{ versionItem.instructions?.length - 1 }} more paragraph{{ versionItem.instructions?.length <= 2 ? "" : "s" }}
                 </p>
             </div>
           </div>
+          }
+
 
           <div class="card-footer">
             <div class="timestamp-info">

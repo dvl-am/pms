@@ -225,7 +225,11 @@ get instructions(): FormArray {
     this.promptService.submitNewPromptConfig(submitObj).subscribe({
       next: (response) => {
         console.log('Prompt configuration submitted successfully:', response);
-      }
+      },error(err) {
+          
+        },complete:()=>{
+          this.isSubmitting = false
+        }
     })
   }
 
@@ -262,6 +266,10 @@ get instructions(): FormArray {
       this.promptService.updatePromptConfig(recordId, submitObj).subscribe({
         next: (response) => {
           console.log('Prompt configuration updated successfully:', response);
+        },error(err) {
+          
+        },complete:()=>{
+          this.isSubmitting = false
         }
       })
     
