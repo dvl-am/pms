@@ -70,7 +70,7 @@
             class="form-textarea json-schema"
             [class.error]="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched"
             rows="8"
-            placeholder='{\n  "type": "object",\n  "properties": {\n    "result": {\n      "type": "string",\n      "description": "The generated result"\n    }\n  },\n  "required": ["result"]\n}'></textarea>
+            placeholder=''></textarea>
             
           <div *ngIf="promptForm.get('prompt')?.invalid && promptForm.get('prompt')?.touched" 
                class="error-message">
