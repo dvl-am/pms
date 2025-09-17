@@ -136,6 +136,9 @@
 }
 
 .toast {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   position: fixed;
   top: 24px;
   right: 24px;
@@ -146,7 +149,7 @@
   transform: translateX(100%);
   transition: all 0.3s ease;
   z-index: 1000;
-  height: 70px;
+  /* height: 70px; */
   width: fit-content;
 }
 
@@ -166,6 +169,7 @@
 
 .toast-icon {
   font-size: 1.25rem;
+  margin-right: 5px;
 }
 
 .toast-message {

@@ -258,6 +258,9 @@
 }
 
 .toast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   top: 24px;
   right: 24px;
@@ -268,7 +271,7 @@
   transform: translateX(100%);
   transition: all 0.3s ease;
   z-index: 1000;
-  height: 70px;
+  /* height: 70px; */
 }
 
 .toast.show {
@@ -280,8 +283,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 20px;
-  height: 40px;
+  /* padding: 16px 20px;
+   */
+  /* height: 40px; */
+  padding: 10px;
 }
 
 .toast-icon {
